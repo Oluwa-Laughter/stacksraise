@@ -1,4 +1,4 @@
-# StacksRaise
+# <img src="frontend/public/favicon.svg" width="32" height="32" alt="StacksRaise Logo" valign="middle" /> StacksRaise
 
 > **Decentralized block-height crowdfunding secured by Bitcoin on Stacks.**
 
