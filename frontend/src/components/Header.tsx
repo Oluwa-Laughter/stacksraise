@@ -105,24 +105,15 @@ export default function Header({ onOpenCreate, onBlockUpdate }: HeaderProps) {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded-lg hover:bg-slate-50 hover:text-[#FF5500] transition-colors"
               >
-                Home Overview
+                Home
               </Link>
               <Link
                 href="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded-lg hover:bg-slate-50 hover:text-[#FF5500] transition-colors"
               >
-                Campaigns Dashboard
+                Dashboard
               </Link>
-              <a
-                href="https://github.com/Oluwa-Laughter/stacksraise"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg hover:bg-slate-50 hover:text-[#FF5500] transition-colors"
-              >
-                GitHub Source Code ↗
-              </a>
             </div>
 
             {/* Mobile New Campaign Action */}

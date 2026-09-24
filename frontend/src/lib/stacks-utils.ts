@@ -85,7 +85,7 @@ export function getCampaignStatus(
   currentBlock: number
 ): CampaignStatus {
   const isGoalMet = campaign.raisedStx >= campaign.targetStx;
-  const isExpired = currentBlock >= campaign.endBlock;
+  const isExpired = currentBlock > 0 && currentBlock >= campaign.endBlock;
 
   if (isGoalMet) {
     return 'TARGET_REACHED';
@@ -174,6 +174,8 @@ export function extractClarityCampaign(id: number, raw: unknown): CampaignData |
 export async function fetchLiveChainTip(nodeUrl: string = 'https://api.testnet.hiro.so'): Promise<{
   stacksTip: number;
   burnBlock: number;
+  tenureHeight: number;
+  contractBlock: number;
 }> {
   // Try internal API proxy in browser first to bypass adblockers/CORS issues
   if (typeof window !== 'undefined') {
@@ -181,9 +183,16 @@ export async function fetchLiveChainTip(nodeUrl: string = 'https://api.testnet.h
       const res = await fetch('/api/stacks/info', { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
+        const tenureHeight = Number(json.tenure_height ?? 0);
+        const burnHeight = Number(json.burn_block_height ?? 0);
+        const stacksTip = Number(json.stacks_tip_height ?? 0);
+        // In Clarity post-Nakamoto, block-height is the tenure block height
+        const contractBlock = tenureHeight > 0 ? tenureHeight : (burnHeight > 0 ? burnHeight : stacksTip);
         return {
-          stacksTip: Number(json.stacks_tip_height ?? 0),
-          burnBlock: Number(json.burn_block_height ?? 0),
+          stacksTip,
+          burnBlock: burnHeight,
+          tenureHeight,
+          contractBlock,
         };
       }
     } catch {
@@ -195,13 +204,19 @@ export async function fetchLiveChainTip(nodeUrl: string = 'https://api.testnet.h
     const res = await fetch(`${nodeUrl}/v2/info`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
+    const tenureHeight = Number(json.tenure_height ?? 0);
+    const burnHeight = Number(json.burn_block_height ?? 0);
+    const stacksTip = Number(json.stacks_tip_height ?? 0);
+    const contractBlock = tenureHeight > 0 ? tenureHeight : (burnHeight > 0 ? burnHeight : stacksTip);
     return {
-      stacksTip: Number(json.stacks_tip_height ?? 0),
-      burnBlock: Number(json.burn_block_height ?? 0),
+      stacksTip,
+      burnBlock: burnHeight,
+      tenureHeight,
+      contractBlock,
     };
   } catch (e) {
     console.warn('Failed to fetch live chain tip:', e);
-    return { stacksTip: 0, burnBlock: 0 };
+    return { stacksTip: 0, burnBlock: 0, tenureHeight: 0, contractBlock: 0 };
   }
 }
 

@@ -120,13 +120,16 @@ export default function Footer() {
 
         {/* Bottom Bar: Copyright & Contract ID */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-500">
-          <div>
-            <p>
+          <div className="text-center sm:text-left">
+            <p className="hidden sm:block">
               © 2026 StacksRaise. Built for the Scaffold Stacks Test-Flight Bounty.
+            </p>
+            <p className="sm:hidden font-medium text-slate-600">
+              © 2026 StacksRaise
             </p>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-xs text-slate-400">
+          <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-400">
             <span>Contract:</span>
             <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
               {contractAddress}

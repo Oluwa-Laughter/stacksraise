@@ -226,13 +226,13 @@ export function CampaignCard({
 
       {/* Action Buttons */}
       <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
-        {/* Active: Contribute */}
-        {status === 'ACTIVE' && (
+        {/* Active or Stretch-goal: Contribute STX */}
+        {!isExpired && !campaign.claimed && (
           <button
             onClick={() => onContributeClick(campaign)}
             className="w-full py-2.5 px-4 rounded-lg bg-[#FF5500] hover:bg-[#E04B00] text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] flex items-center justify-center gap-2"
           >
-            <span>Contribute STX</span>
+            <span>{isGoalMet ? 'Back Campaign (Stretch Goal)' : 'Contribute STX'}</span>
             <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>

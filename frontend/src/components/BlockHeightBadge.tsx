@@ -22,10 +22,11 @@ export function BlockHeightBadge({ onHeightUpdate }: BlockHeightBadgeProps) {
     if (manual) setIsRefreshing(true);
     try {
       const tip = await fetchLiveChainTip(scaffoldConfig.nodeUrl);
-      if (tip.stacksTip > 0) {
-        setTipHeight(tip.stacksTip);
+      const effectiveBlock = tip.contractBlock > 0 ? tip.contractBlock : tip.stacksTip;
+      if (effectiveBlock > 0) {
+        setTipHeight(effectiveBlock);
         setBurnHeight(tip.burnBlock);
-        onHeightUpdateRef.current?.(tip.stacksTip);
+        onHeightUpdateRef.current?.(effectiveBlock);
       }
     } finally {
       if (manual) {
