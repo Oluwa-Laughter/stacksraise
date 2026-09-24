@@ -84,9 +84,7 @@ flowchart TD
 
 ---
 
-## 🛡 On-Chain Project Registration (Zero LocalStorage)
-
-StacksRaise operates strictly on the Web3 ethos: **no local storage, no cookies, and no off-chain databases**.
+## 🛡 On-Chain Project Registration
 
 When a creator creates a crowdfunding campaign:
 - **Project Title / Name** (`string-ascii 64`): Stored directly in the `Campaigns` Clarity data map.
