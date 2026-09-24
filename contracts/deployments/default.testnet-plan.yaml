@@ -1,0 +1,17 @@
+id: 0
+name: Testnet deployment
+network: testnet
+stacks-node: https://api.testnet.hiro.so
+bitcoin-node: http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332
+plan:
+  batches:
+  - id: 0
+    transactions:
+    - transaction-type: contract-publish
+      contract-name: crowdfund
+      expected-sender: ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9
+      cost: 50460
+      path: contracts/crowdfund.clar
+      anchor-block-only: true
+      clarity-version: 2
+    epoch: '2.5'
