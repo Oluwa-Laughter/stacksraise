@@ -24,7 +24,7 @@ export default function LandingPage() {
       {/* Top Navigation */}
       <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
-          {/* Brand Logo (Clickable) */}
+          {/* Brand Logo (Clickable Link to Home) */}
           <div className="flex items-center gap-3 shrink-0">
             <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
               <div className="w-8 h-8 rounded-lg bg-[#FF5500] flex items-center justify-center shadow-sm group-hover:bg-[#E04B00] transition-colors shrink-0">
@@ -42,7 +42,7 @@ export default function LandingPage() {
           </div>
 
           {/* Navigation Anchor Links (Desktop) */}
-          <div className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600">
+          <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
             <a
               href="#features"
               onClick={(e) => scrollToSection(e, 'features')}
@@ -372,7 +372,7 @@ export default function LandingPage() {
               </span>
             </motion.div>
             <motion.div whileHover={{ y: -2 }}>
-              <span className="block text-2xl sm:text-3xl font-bold font-mono text-emerald-600">
+              <span className="block text-2xl sm:text-3xl font-bold font-mono text-[#FF5500]">
                 0%
               </span>
               <span className="text-xs text-slate-500 font-medium mt-1 block">
@@ -439,7 +439,7 @@ export default function LandingPage() {
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
             className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mb-4">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 text-[#FF5500] flex items-center justify-center mb-4">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
@@ -546,88 +546,86 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Real-World User-Friendly Security & Escrow Guarantee Section */}
-      <section id="security" className="py-16 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      {/* User-Centric Security & Escrow Guarantee Section (Standard UI Typeface & Stacks Orange Brand Theme) */}
+      <section id="security" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Text Explanations */}
-          <div className="lg:col-span-6 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
+          <div className="lg:col-span-6 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-orange-50 text-[#FF5500] border border-orange-200">
+              <span className="w-2 h-2 rounded-full bg-[#FF5500] animate-pulse" />
               <span>Backer & Creator Protection</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0F172A] font-instrument leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F172A] font-instrument tracking-tight leading-tight">
               Built-In Escrow Guarantee for Every Backer
             </h2>
 
-            <p className="text-sm text-slate-600 leading-relaxed">
-              On traditional crowdfunding platforms, your money sits in corporate bank accounts with risk of chargebacks, payment holds, and platform freezes. StacksRaise eliminates counterparty risk using autonomous smart contracts secured by Bitcoin consensus.
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              Traditional crowdfunding locks your money in opaque corporate accounts with chargeback risks and payout holds. StacksRaise protects you with autonomous smart contracts verified on Bitcoin Layer 2.
             </p>
 
-            {/* Key Guarantees List */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            {/* Key Guarantees List - Standard Typeface & Concise Wording */}
+            <div className="space-y-4 pt-2">
+              <motion.div whileHover={{ x: 4 }} className="flex items-start gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="w-9 h-9 rounded-lg bg-orange-50 border border-orange-200 text-[#FF5500] flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0F172A]">Zero-Middleman Smart Escrow</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Funds are locked in the autonomous contract vault. Not even the platform developers can touch or redirect your contribution.
+                  <h4 className="text-base font-bold text-[#0F172A]">Zero-Middleman Smart Escrow</h4>
+                  <p className="text-sm text-slate-600 mt-1 leading-relaxed">
+                    Funds remain securely locked inside the contract vault until the goal is met. Neither creators nor platform owners can touch your contribution.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              <motion.div whileHover={{ x: 4 }} className="flex items-start gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="w-9 h-9 rounded-lg bg-orange-50 border border-orange-200 text-[#FF5500] flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0F172A]">Guaranteed 1-Click Refunds</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    If a campaign falls short of 100% when the deadline block arrives, contributors can immediately claim a full refund directly to their wallet. No customer support forms, no disputes.
+                  <h4 className="text-base font-bold text-[#0F172A]">Guaranteed 1-Click Refunds</h4>
+                  <p className="text-sm text-slate-600 mt-1 leading-relaxed">
+                    If a campaign misses its goal when the deadline arrives, contributors claim 100% of their STX back directly to their wallet. No support forms, no disputes.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              <motion.div whileHover={{ x: 4 }} className="flex items-start gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="w-9 h-9 rounded-lg bg-orange-50 border border-orange-200 text-[#FF5500] flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0F172A]">Tamper-Proof Bitcoin Deadlines</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Deadlines are enforced by immutable Bitcoin blocks. Deadlines cannot be secretly extended or retroactively modified by creators.
+                  <h4 className="text-base font-bold text-[#0F172A]">Tamper-Proof Bitcoin Deadlines</h4>
+                  <p className="text-sm text-slate-600 mt-1 leading-relaxed">
+                    Deadlines are locked to Bitcoin block heights (~10 min/block). Once published, deadlines cannot be secretly extended or altered by anyone.
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
-          {/* Right Interactive Protection Flow Visualizer */}
-          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 shadow-lg">
+          {/* Right Interactive Protection Flow Visualizer - Stacks Orange Brand Theme */}
+          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xl">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-mono font-bold text-slate-800">
-                  How Escrow Settlement Works
+                <div className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse" />
+                <span className="text-sm font-mono font-bold text-[#0F172A]">
+                  Escrow Settlement Lifecycle
                 </span>
               </div>
               {/* Tab Selector */}
               <div className="flex items-center p-1 bg-slate-100 rounded-lg text-xs font-semibold">
                 <button
                   onClick={() => setActiveTab('success')}
-                  className={`px-3 py-1 rounded-md transition-all ${
+                  className={`px-3 py-1.5 rounded-md transition-all ${
                     activeTab === 'success'
-                      ? 'bg-white text-emerald-600 shadow-xs'
+                      ? 'bg-white text-[#FF5500] shadow-sm font-bold'
                       : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -635,9 +633,9 @@ export default function LandingPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab('refund')}
-                  className={`px-3 py-1 rounded-md transition-all ${
+                  className={`px-3 py-1.5 rounded-md transition-all ${
                     activeTab === 'refund'
-                      ? 'bg-white text-[#FF5500] shadow-xs'
+                      ? 'bg-white text-[#FF5500] shadow-sm font-bold'
                       : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -647,40 +645,40 @@ export default function LandingPage() {
             </div>
 
             {/* Dynamic Interactive Flow State */}
-            <div className="mt-5 space-y-4">
+            <div className="mt-6 space-y-4">
               {activeTab === 'success' ? (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.25 }}
                   className="space-y-4"
                 >
-                  <div className="p-4 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-2">
+                  <div className="p-4 bg-orange-50/70 border border-orange-200 rounded-xl space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono font-bold text-emerald-800">
+                      <span className="text-xs font-mono font-bold text-[#FF5500]">
                         SCENARIO: TARGET REACHED (≥ 100%)
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">
-                        SUCCESSFUL CAMPAIGN
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FF5500] text-white">
+                        CAMPAIGN FUNDED
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      The campaign reached or exceeded its target STX before the deadline block.
+                    <p className="text-sm text-slate-700">
+                      The campaign reached its goal before the deadline block height arrived.
                     </p>
                   </div>
 
-                  <div className="space-y-2.5 text-xs font-mono">
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-[10px]">1</span>
-                      <span className="text-slate-700">Deadline block height reached on Bitcoin L2</span>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-800 text-xs shrink-0 font-mono">1</span>
+                      <span className="text-slate-700 font-medium">Deadline block reached on Bitcoin L2</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-[10px]">2</span>
-                      <span className="text-slate-700">Creator clicks "Claim Funds"</span>
+                    <div className="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-800 text-xs shrink-0 font-mono">2</span>
+                      <span className="text-slate-700 font-medium">Creator signs &quot;Claim Funds&quot; contract call</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 font-semibold">
-                      <span className="w-5 h-5 rounded-full bg-emerald-200 flex items-center justify-center font-bold text-emerald-800 text-[10px]">✓</span>
-                      <span>Total raised STX transfers instantly from contract to creator</span>
+                    <div className="flex items-center gap-3 p-3.5 bg-orange-50 border border-orange-300 rounded-xl text-orange-950 font-semibold">
+                      <span className="w-6 h-6 rounded-full bg-[#FF5500] text-white flex items-center justify-center font-bold text-xs shrink-0 font-mono">✓</span>
+                      <span>Total raised STX transfers directly from escrow vault to creator</span>
                     </div>
                   </div>
                 </motion.div>
@@ -688,35 +686,35 @@ export default function LandingPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.25 }}
                   className="space-y-4"
                 >
-                  <div className="p-4 bg-orange-50/60 border border-orange-200 rounded-xl space-y-2">
+                  <div className="p-4 bg-orange-50/70 border border-orange-200 rounded-xl space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-mono font-bold text-[#FF5500]">
                         SCENARIO: TARGET MISSED (&lt; 100%)
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-[#FF5500]">
-                        REFUND GUARANTEED
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FF5500] text-white">
+                        REFUND READY
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      The campaign deadline arrived, but the total raised was less than the target.
+                    <p className="text-sm text-slate-700">
+                      The campaign concluded without reaching its minimum target goal.
                     </p>
                   </div>
 
-                  <div className="space-y-2.5 text-xs font-mono">
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-[10px]">1</span>
-                      <span className="text-slate-700">Deadline block reached on Bitcoin L2</span>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-800 text-xs shrink-0 font-mono">1</span>
+                      <span className="text-slate-700 font-medium">Deadline block reached on Bitcoin L2</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 text-[10px]">2</span>
-                      <span className="text-slate-700">Contributor clicks "Claim Refund" button</span>
+                    <div className="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-800 text-xs shrink-0 font-mono">2</span>
+                      <span className="text-slate-700 font-medium">Contributor clicks 1-Click &quot;Claim Refund&quot; button</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-orange-50 border border-orange-200 rounded-lg text-orange-900 font-semibold">
-                      <span className="w-5 h-5 rounded-full bg-orange-200 flex items-center justify-center font-bold text-orange-900 text-[10px]">✓</span>
-                      <span>100% of user's contribution returns to their wallet immediately</span>
+                    <div className="flex items-center gap-3 p-3.5 bg-orange-50 border border-orange-300 rounded-xl text-orange-950 font-semibold">
+                      <span className="w-6 h-6 rounded-full bg-[#FF5500] text-white flex items-center justify-center font-bold text-xs shrink-0 font-mono">✓</span>
+                      <span>100% of contributed STX is immediately returned to user&apos;s wallet</span>
                     </div>
                   </div>
                 </motion.div>
@@ -726,10 +724,10 @@ export default function LandingPage() {
               <div className="pt-2">
                 <Link
                   href="/dashboard"
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold tracking-wide transition-all shadow-sm flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-xl bg-[#FF5500] hover:bg-[#E04B00] text-white text-sm font-semibold tracking-wide transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.99]"
                 >
                   <span>Experience Live Campaigns on Dashboard</span>
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </Link>
@@ -739,68 +737,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Frequently Asked Questions Section */}
-      <section id="faq" className="py-16 sm:py-20 bg-white border-t border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#FF5500] font-mono">
-              Got Questions?
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] font-instrument mt-2">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Everything you need to know about crowdfunding on Stacks and Bitcoin.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl">
-              <h3 className="text-sm font-bold text-[#0F172A]">
-                What happens if a campaign misses its funding target?
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                If the deadline block height passes and the campaign has not reached 100% of its target STX, contributors can click the "Claim Refund" button on the campaign card. The smart contract immediately sends 100% of their contribution back to their Stacks wallet.
-              </p>
-            </div>
-
-            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl">
-              <h3 className="text-sm font-bold text-[#0F172A]">
-                How are deadlines determined?
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Deadlines are measured in Bitcoin/Stacks block heights rather than calendar dates. Because blocks are produced roughly every 10 minutes by network miners, 144 blocks represent approximately 24 hours. Block timestamps cannot be forged or altered by creators.
-              </p>
-            </div>
-
-            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl">
-              <h3 className="text-sm font-bold text-[#0F172A]">
-                Which wallets can I use?
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                StacksRaise supports both Xverse and Leather wallets, as well as any Stacks-compatible wallet. Make sure your wallet is set to Stacks Testnet to interact with live testnet campaigns.
-              </p>
-            </div>
-
-            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl">
-              <h3 className="text-sm font-bold text-[#0F172A]">
-                Can platform owners or creators freeze my funds?
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                No. StacksRaise smart contracts are strictly non-custodial and open-source. The contract code alone dictates the movement of STX. Neither the creators nor the platform team possess any special administrative keys or backdoors.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final Call to Action */}
-      <section className="bg-slate-50 border-t border-slate-200 py-16 sm:py-20">
+      {/* Primary Call to Action Banner */}
+      <section className="bg-white border-t border-slate-200 py-16 sm:py-20">
         <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] font-instrument">
             Ready to Crowdfund on Bitcoin?
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
             Connect your testnet wallet and launch your campaign with block-height security in under 60 seconds.
           </p>
           <div className="pt-2">
@@ -813,6 +756,61 @@ export default function LandingPage() {
                 <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions Section (Placed as the FINAL concluding section before footer!) */}
+      <section id="faq" className="py-16 sm:py-24 bg-[#F8FAFC] border-t border-slate-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#FF5500] font-mono">
+              Got Questions?
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] font-instrument mt-2">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 mt-2">
+              Everything you need to know about block-height crowdfunding secured by Bitcoin.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <motion.div whileHover={{ y: -2 }} className="p-6 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <h3 className="text-base font-bold text-[#0F172A]">
+                What happens if a campaign misses its funding target?
+              </h3>
+              <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+                If the deadline block height passes and the campaign has not reached 100% of its target STX, contributors can click the &quot;Claim Refund&quot; button on the campaign card. The smart contract immediately sends 100% of their contribution back to their Stacks wallet.
+              </p>
+            </motion.div>
+
+            <motion.div whileHover={{ y: -2 }} className="p-6 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <h3 className="text-base font-bold text-[#0F172A]">
+                How are deadlines determined?
+              </h3>
+              <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+                Deadlines are measured in Bitcoin/Stacks block heights rather than calendar dates. Because blocks are produced roughly every 10 minutes by network miners, 144 blocks represent approximately 24 hours. Block timestamps cannot be forged or altered by creators.
+              </p>
+            </motion.div>
+
+            <motion.div whileHover={{ y: -2 }} className="p-6 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <h3 className="text-base font-bold text-[#0F172A]">
+                Which wallets can I use?
+              </h3>
+              <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+                StacksRaise supports both Xverse and Leather wallets, as well as any Stacks-compatible wallet. Make sure your wallet is set to Stacks Testnet to interact with live testnet campaigns.
+              </p>
+            </motion.div>
+
+            <motion.div whileHover={{ y: -2 }} className="p-6 bg-white border border-slate-200 rounded-2xl shadow-xs">
+              <h3 className="text-base font-bold text-[#0F172A]">
+                Can platform owners or creators freeze my funds?
+              </h3>
+              <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+                No. StacksRaise smart contracts are strictly non-custodial and open-source. The contract code alone dictates the movement of STX. Neither the creators nor the platform team possess any special administrative keys or backdoors.
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>

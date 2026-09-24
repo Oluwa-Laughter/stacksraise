@@ -12,26 +12,36 @@ import { crowdfund_getCampaign } from '../generated/contracts';
 import { useCrowdfund_GetCampaignCount } from '../generated/hooks';
 import deployments from '../generated/deployments.json';
 
+export type FilterTab = 'ALL' | 'ACTIVE' | 'TARGET_REACHED' | 'EXPIRED';
+
 interface CampaignFeedProps {
   currentBlock: number;
   onOpenCreate: () => void;
   onSelectCampaignToFund: (campaign: CampaignData) => void;
   onCampaignsLoaded?: (campaigns: CampaignData[]) => void;
+  activeZone?: FilterTab;
+  onZoneChange?: (zone: FilterTab) => void;
 }
-
-type FilterTab = 'ALL' | 'ACTIVE' | 'TARGET_REACHED' | 'EXPIRED';
 
 export function CampaignFeed({
   currentBlock,
   onOpenCreate,
   onSelectCampaignToFund,
   onCampaignsLoaded,
+  activeZone,
+  onZoneChange,
 }: CampaignFeedProps) {
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<FilterTab>('ALL');
+  const [localActiveTab, setLocalActiveTab] = useState<FilterTab>('ALL');
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const activeTab = activeZone ?? localActiveTab;
+  const setActiveTab = (tab: FilterTab) => {
+    setLocalActiveTab(tab);
+    onZoneChange?.(tab);
+  };
 
   const { call: fetchCount } = useCrowdfund_GetCampaignCount();
 
@@ -118,50 +128,18 @@ export function CampaignFeed({
   return (
     <div>
       {/* Header controls & tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl overflow-x-auto">
-          {(
-            [
-              { key: 'ALL', label: 'All Campaigns', count: campaigns.length },
-              {
-                key: 'ACTIVE',
-                label: 'Active',
-                count: campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'ACTIVE').length,
-              },
-              {
-                key: 'TARGET_REACHED',
-                label: 'Target Reached',
-                count: campaigns.filter(
-                  (c) => getCampaignStatus(c, currentBlock) === 'TARGET_REACHED'
-                ).length,
-              },
-              {
-                key: 'EXPIRED',
-                label: 'Ended / Missed',
-                count: campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'EXPIRED').length,
-              },
-            ] as const
-          ).map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                activeTab === tab.key
-                  ? 'bg-white text-[#0F172A] shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
-                  activeTab === tab.key ? 'bg-orange-50 text-[#FF5500]' : 'bg-slate-200/60 text-slate-600'
-                }`}
-              >
-                {tab.count}
-              </span>
-            </button>
-          ))}
+      {/* Header controls: Zone Status & Sync Button */}
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
+            Showing Zone:
+          </span>
+          <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-mono font-bold text-[#0F172A] shadow-xs">
+            {activeTab === 'ALL' && `All Campaigns (${campaigns.length})`}
+            {activeTab === 'ACTIVE' && `Active (${filteredCampaigns.length})`}
+            {activeTab === 'TARGET_REACHED' && `Target Reached (${filteredCampaigns.length})`}
+            {activeTab === 'EXPIRED' && `Ended / Missed (${filteredCampaigns.length})`}
+          </span>
         </div>
 
         {/* Refresh button */}
