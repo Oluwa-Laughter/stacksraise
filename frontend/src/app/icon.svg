@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="16" fill="#FF5500"/>
-  <!-- Stacks Layers / Bitcoin Ascent Blocks -->
-  <g fill="#FFFFFF">
-    <path d="M32 10L10 21l22 11 22-11L32 10z"/>
-    <path d="M10 43l22 11 22-11-5-2.5-17 8.5-17-8.5-5 2.5z"/>
-    <path d="M10 32l22 11 22-11-5-2.5-17 8.5-17-8.5-5 2.5z"/>
-  </g>
-</svg>
