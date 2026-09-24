@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import {
   connect,
   disconnect,
@@ -271,130 +272,134 @@ export function WalletConnect() {
         </button>
 
         {/* Wallet Selection Modal */}
-        <AnimatePresence>
-          {isModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => !connecting && setIsModalOpen(false)}
-                className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
-              />
+        {isMounted &&
+          createPortal(
+            <AnimatePresence>
+              {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => !connecting && setIsModalOpen(false)}
+                    className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
+                  />
 
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="relative w-full max-w-sm bg-white border border-slate-200 rounded-2xl p-6 shadow-xl z-10"
-              >
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div>
-                    <h3 className="text-base font-bold text-[#0F172A] font-instrument">
-                      Connect Stacks Wallet
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Select your preferred wallet for Stacks Testnet
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    disabled={connecting}
-                    className="text-slate-400 hover:text-slate-600 p-1"
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                    className="relative w-full max-w-sm bg-white border border-slate-200 rounded-2xl p-6 shadow-xl z-10"
                   >
-                    ✕
-                  </button>
-                </div>
-
-                {connectError && (
-                  <div className="mt-3 p-2.5 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600 font-mono">
-                    {connectError}
-                  </div>
-                )}
-
-                <div className="mt-4 space-y-2.5">
-                  {/* Xverse Wallet Option */}
-                  <button
-                    onClick={() => executeConnect('xverse')}
-                    disabled={connecting}
-                    className="w-full p-3 rounded-xl border border-slate-200 hover:border-[#FF5500] hover:bg-orange-50/40 transition-all flex items-center justify-between group active:scale-[0.99] text-left"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center p-1.5 shadow-sm">
-                        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
-                          <path
-                            d="M17.5 18H6.5C5.1 18 4 16.9 4 15.5V8.5C4 7.1 5.1 6 6.5 6H17.5C18.9 6 20 7.1 20 8.5V15.5C20 16.9 18.9 18 17.5 18Z"
-                            fill="#171717"
-                          />
-                          <path
-                            d="M15.5 8L8.5 16M8.5 8L15.5 16"
-                            stroke="#EE7A30"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </div>
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                       <div>
-                        <span className="block text-sm font-bold text-[#0F172A] group-hover:text-[#FF5500] transition-colors">
-                          Xverse Wallet
-                        </span>
-                        <span className="block text-[11px] text-slate-500">
-                          Recommended for Bitcoin & Stacks
-                        </span>
+                        <h3 className="text-base font-bold text-[#0F172A] font-instrument">
+                          Connect Stacks Wallet
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          Select your preferred wallet for Stacks Testnet
+                        </p>
                       </div>
+                      <button
+                        onClick={() => setIsModalOpen(false)}
+                        disabled={connecting}
+                        className="text-slate-400 hover:text-slate-600 p-1"
+                      >
+                        ✕
+                      </button>
                     </div>
-                    <svg className="w-4 h-4 text-slate-400 group-hover:text-[#FF5500] group-hover:translate-x-0.5 transition-all" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </button>
 
-                  {/* Leather Wallet Option */}
-                  <button
-                    onClick={() => executeConnect('leather')}
-                    disabled={connecting}
-                    className="w-full p-3 rounded-xl border border-slate-200 hover:border-[#FF5500] hover:bg-orange-50/40 transition-all flex items-center justify-between group active:scale-[0.99] text-left"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#12100F] flex items-center justify-center p-1.5 shadow-sm">
-                        <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="currentColor">
-                          <circle cx="12" cy="12" r="8" fill="#F5F1ED" />
-                          <circle cx="12" cy="12" r="4" fill="#12100F" />
+                    {connectError && (
+                      <div className="mt-3 p-2.5 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600 font-mono">
+                        {connectError}
+                      </div>
+                    )}
+
+                    <div className="mt-4 space-y-2.5">
+                      {/* Xverse Wallet Option */}
+                      <button
+                        onClick={() => executeConnect('xverse')}
+                        disabled={connecting}
+                        className="w-full p-3 rounded-xl border border-slate-200 hover:border-[#FF5500] hover:bg-orange-50/40 transition-all flex items-center justify-between group active:scale-[0.99] text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center p-1.5 shadow-sm">
+                            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
+                              <path
+                                d="M17.5 18H6.5C5.1 18 4 16.9 4 15.5V8.5C4 7.1 5.1 6 6.5 6H17.5C18.9 6 20 7.1 20 8.5V15.5C20 16.9 18.9 18 17.5 18Z"
+                                fill="#171717"
+                              />
+                              <path
+                                d="M15.5 8L8.5 16M8.5 8L15.5 16"
+                                stroke="#EE7A30"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <span className="block text-sm font-bold text-[#0F172A] group-hover:text-[#FF5500] transition-colors">
+                              Xverse Wallet
+                            </span>
+                            <span className="block text-[11px] text-slate-500">
+                              Recommended for Bitcoin & Stacks
+                            </span>
+                          </div>
+                        </div>
+                        <svg className="w-4 h-4 text-slate-400 group-hover:text-[#FF5500] group-hover:translate-x-0.5 transition-all" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                         </svg>
-                      </div>
-                      <div>
-                        <span className="block text-sm font-bold text-[#0F172A] group-hover:text-[#FF5500] transition-colors">
-                          Leather Wallet
-                        </span>
-                        <span className="block text-[11px] text-slate-500">
-                          Native Hiro extension
-                        </span>
-                      </div>
+                      </button>
+
+                      {/* Leather Wallet Option */}
+                      <button
+                        onClick={() => executeConnect('leather')}
+                        disabled={connecting}
+                        className="w-full p-3 rounded-xl border border-slate-200 hover:border-[#FF5500] hover:bg-orange-50/40 transition-all flex items-center justify-between group active:scale-[0.99] text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-[#12100F] flex items-center justify-center p-1.5 shadow-sm">
+                            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="currentColor">
+                              <circle cx="12" cy="12" r="8" fill="#F5F1ED" />
+                              <circle cx="12" cy="12" r="4" fill="#12100F" />
+                            </svg>
+                          </div>
+                          <div>
+                            <span className="block text-sm font-bold text-[#0F172A] group-hover:text-[#FF5500] transition-colors">
+                              Leather Wallet
+                            </span>
+                            <span className="block text-[11px] text-slate-500">
+                              Native Hiro extension
+                            </span>
+                          </div>
+                        </div>
+                        <svg className="w-4 h-4 text-slate-400 group-hover:text-[#FF5500] group-hover:translate-x-0.5 transition-all" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+
+                      {/* All Providers Fallback */}
+                      <button
+                        onClick={() => executeConnect()}
+                        disabled={connecting}
+                        className="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600 transition-colors text-center block"
+                      >
+                        {connecting ? 'Waiting for signature...' : 'Other Wallets / Stacks Connect Modal ↗'}
+                      </button>
                     </div>
-                    <svg className="w-4 h-4 text-slate-400 group-hover:text-[#FF5500] group-hover:translate-x-0.5 transition-all" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </button>
 
-                  {/* All Providers Fallback */}
-                  <button
-                    onClick={() => executeConnect()}
-                    disabled={connecting}
-                    className="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600 transition-colors text-center block"
-                  >
-                    {connecting ? 'Waiting for signature...' : 'Other Wallets / Stacks Connect Modal ↗'}
-                  </button>
+                    <div className="mt-4 pt-3 border-t border-slate-100 text-center">
+                      <p className="text-[11px] text-slate-400">
+                        Network: <strong className="text-slate-600 font-mono uppercase">{scaffoldConfig.network}</strong> (Hiro Testnet)
+                      </p>
+                    </div>
+                  </motion.div>
                 </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 text-center">
-                  <p className="text-[11px] text-slate-400">
-                    Network: <strong className="text-slate-600 font-mono uppercase">{scaffoldConfig.network}</strong> (Hiro Testnet)
-                  </p>
-                </div>
-              </motion.div>
-            </div>
+              )}
+            </AnimatePresence>,
+            document.body
           )}
-        </AnimatePresence>
       </>
     );
   }
