@@ -109,6 +109,7 @@ export function CampaignCard({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
       className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
     >
@@ -186,19 +187,19 @@ export function CampaignCard({
 
         {/* Block Height & Deadline Metadata */}
         <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg mb-4 text-xs font-mono">
-          <div>
-            <span className="block text-[10px] uppercase tracking-wider text-slate-400">
+          <div className="min-w-0">
+            <span className="block text-[10px] uppercase tracking-wider text-slate-400 truncate">
               Deadline Block
             </span>
-            <span className="font-semibold text-slate-700">#{campaign.endBlock.toLocaleString()}</span>
+            <span className="font-semibold text-slate-700 truncate block">#{campaign.endBlock.toLocaleString()}</span>
           </div>
-          <div>
-            <span className="block text-[10px] uppercase tracking-wider text-slate-400">
+          <div className="min-w-0">
+            <span className="block text-[10px] uppercase tracking-wider text-slate-400 truncate">
               Remaining
             </span>
-            <span className={`font-semibold ${remainingBlocks === 0 ? 'text-slate-500' : 'text-[#FF5500]'}`}>
+            <span className={`font-semibold truncate block ${remainingBlocks === 0 ? 'text-slate-500' : 'text-[#FF5500]'}`}>
               {remainingBlocks > 0
-                ? `${remainingBlocks.toLocaleString()} blocks (${blocksToTimeEstimate(remainingBlocks)})`
+                ? `${remainingBlocks.toLocaleString()} blks (${blocksToTimeEstimate(remainingBlocks)})`
                 : 'Deadline reached'}
             </span>
           </div>

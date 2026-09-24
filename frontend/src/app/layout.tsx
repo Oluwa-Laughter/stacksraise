@@ -7,7 +7,9 @@ export const metadata = {
   title: 'StacksRaise — Decentralized Block-Height Crowdfunding',
   description: 'Decentralized block-height crowdfunding secured by Bitcoin on Stacks Testnet',
   icons: {
-    icon: '/icon.png',
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
   },
 };
 

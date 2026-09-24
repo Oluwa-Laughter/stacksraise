@@ -46,39 +46,39 @@ export function StatsBanner({ campaigns, currentBlock, onOpenCreate }: StatsBann
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100">
-        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl">
-          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-slate-100">
+        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl min-w-0">
+          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono truncate">
             Total Campaigns
           </span>
-          <span className="text-xl font-bold font-mono text-[#0F172A] mt-0.5 block">
+          <span className="text-xl font-bold font-mono text-[#0F172A] mt-0.5 block truncate">
             {totalCampaigns}
           </span>
         </div>
 
-        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl">
-          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono">
+        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl min-w-0">
+          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono truncate">
             Total Volume Raised
           </span>
-          <span className="text-xl font-bold font-mono text-[#FF5500] mt-0.5 block">
+          <span className="text-xl font-bold font-mono text-[#FF5500] mt-0.5 block truncate">
             {formatStx(totalVolumeRaised, 2)} <span className="text-xs font-normal text-slate-500">STX</span>
           </span>
         </div>
 
-        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl">
-          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono">
+        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl min-w-0">
+          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono truncate">
             Active Campaigns
           </span>
-          <span className="text-xl font-bold font-mono text-[#0F172A] mt-0.5 block">
+          <span className="text-xl font-bold font-mono text-[#0F172A] mt-0.5 block truncate">
             {activeCampaigns}
           </span>
         </div>
 
-        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl">
-          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono">
-            Funded / Target Met
+        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl min-w-0">
+          <span className="block text-[11px] uppercase tracking-wider text-slate-500 font-mono truncate">
+            Funded / Met
           </span>
-          <span className="text-xl font-bold font-mono text-emerald-600 mt-0.5 block">
+          <span className="text-xl font-bold font-mono text-emerald-600 mt-0.5 block truncate">
             {fundedCampaigns}
           </span>
         </div>
