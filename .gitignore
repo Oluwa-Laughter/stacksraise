@@ -24,3 +24,7 @@ frontend/out/
 # OS
 .DS_Store
 *.pem
+.agents/
+.cursor/
+SUBMISSION_SUMMARY.md
+PROJECT_SPEC.md

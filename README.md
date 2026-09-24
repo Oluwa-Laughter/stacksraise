@@ -1,4 +1,4 @@
-# StacksRaise 🚀
+# StacksRaise
 
 > **Decentralized block-height crowdfunding secured by Bitcoin on Stacks.**
 
@@ -20,9 +20,6 @@
 - [Frontend Experience & Design System](#-frontend-experience--design-system)
 - [Developer Quickstart](#-developer-quickstart)
 - [Test & Verification Results](#-test--verification-results)
-- [Vercel Deployment Guide](#-vercel-deployment-guide)
-- [Hackathon Judges Checklist](#-hackathon-judges-checklist)
-
 ---
 
 ## 🌟 Overview
@@ -136,9 +133,7 @@ stacks-raise/
 │   └── scaffold.config.ts                # Network resolver (devnet / testnet / mainnet)
 │
 ├── AGENTS.md                             # AI Agent guide & CLI instructions
-├── PROJECT_SPEC.md                       # Hackathon design system and requirements
 ├── README.md                             # Project documentation (this file)
-├── SUBMISSION_SUMMARY.md                 # Submission log & Scaffold Stacks feedback
 └── stacksdapp.toml                       # Scaffold Stacks workspace configuration
 ```
 
@@ -253,36 +248,6 @@ Route (app)
 ├ ○ /api/stacks/info                     (Chain Tip Proxy)
 └ ○ /dashboard                           (Crowdfunding Dashboard)
 ```
-
----
-
-## 🚀 Vercel Deployment Guide
-
-Deploying StacksRaise to Vercel takes under 2 minutes:
-
-1. Import your GitHub repository: `https://github.com/Oluwa-Laughter/stacksraise`
-2. **Root Directory**: Select `frontend` (crucial since this repository is a monorepo).
-3. **Framework Preset**: `Next.js` (automatically detected).
-4. **Environment Variables**:
-   ```env
-   NEXT_PUBLIC_NETWORK=testnet
-   NEXT_PUBLIC_STACKS_NODE_URL=https://api.testnet.hiro.so
-   ```
-5. Click **Deploy**. The application will automatically interface with the live testnet smart contract.
-
----
-
-## 🏆 Hackathon Judges Checklist
-
-- [x] **Zero Mock Data**: UI loads 100% live state from `crowdfund.clar` and Hiro Testnet API.
-- [x] **Real Testnet Contract**: Deployed on Stacks Testnet (`ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9.crowdfund`).
-- [x] **Bitcoin Block-Height Deadlines**: Real-time chain tip tracking and countdowns.
-- [x] **Xverse & Leather Wallet Integration**: 1-click modal connection with testnet address detection.
-- [x] **User-Centric Landing Page**: Real-world explanations of escrow protection, guaranteed refunds, and FAQs.
-- [x] **Clean Dashboard**: 100% focused on crowdfunding campaigns without raw developer clutter.
-- [x] **Security Guardrails**: Deployer mnemonics strictly excluded and `.gitignore` protected.
-- [x] **Mobile Responsiveness**: Complete hamburger drawer menu and zero text overflows across all viewports.
-- [x] **Passes All Tests**: 6/6 Clarity unit tests passing, Next.js 15 production build passing.
 
 ---
 
