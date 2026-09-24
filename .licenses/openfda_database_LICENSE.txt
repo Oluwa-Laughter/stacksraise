@@ -1,0 +1,2 @@
+Terms checked: https://open.fda.gov/apis/ and https://open.fda.gov/license
+Notification timestamp: 2026-09-24T17:12:09+01:00

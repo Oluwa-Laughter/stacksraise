@@ -1,0 +1,34 @@
+{
+  "name": "frontend",
+  "private": true,
+  "scripts": {
+    "dev": "node ./node_modules/next/dist/bin/next dev",
+    "build": "node ./node_modules/next/dist/bin/next build",
+    "typecheck": "tsc --noEmit",
+    "start": "node ./node_modules/next/dist/bin/next start",
+    "test": "node ./node_modules/vitest/vitest.mjs run --passWithNoTests"
+  },
+  "dependencies": {
+    "@stacks/connect": "^8",
+    "@stacks/network": "^7",
+    "@stacks/transactions": "^7",
+    "framer-motion": "^13.4.3",
+    "jotai": "^2.19.0",
+    "next": "^15",
+    "pino-pretty": "^11",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.7.0"
+  },
+  "devDependencies": {
+    "@stacks/clarinet-sdk": "3.21.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10",
+    "postcss": "^8",
+    "tailwindcss": "^3",
+    "typescript": "^5",
+    "vitest": "^4.1.8"
+  }
+}

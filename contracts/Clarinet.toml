@@ -1,0 +1,13 @@
+[project]
+name = "stacks-raise"
+cache_dir = "./.cache"
+requirements = []
+
+[repl.analysis]
+passes = ["check_checker"]
+check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
+
+[contracts.crowdfund]
+path = "contracts/crowdfund.clar"
+clarity_version = 2
+epoch = "2.5"
