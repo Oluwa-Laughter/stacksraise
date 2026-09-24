@@ -26,6 +26,3 @@ frontend/out/
 *.pem
 .agents/
 .cursor/
-SUBMISSION_SUMMARY.md
-PROJECT_SPEC.md
-screenshots/

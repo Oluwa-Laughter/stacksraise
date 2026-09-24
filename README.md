@@ -40,16 +40,14 @@ Traditional crowdfunding platforms suffer from opaque escrow custody, third-part
 
 ## 🔗 Live Testnet Deployment
 
-The active, feature-complete contract (`crowdfund-v2`) is deployed and fully verified on Stacks Testnet:
-
-| Parameter | Active Contract (v2) | Initial Milestone (v1) |
-| :--- | :--- | :--- |
-| **Contract Name** | `crowdfund-v2` | `crowdfund` |
-| **Contract Address** | `ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9.crowdfund-v2` | `ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9.crowdfund` |
-| **Deployment Tx** | [`0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27`](https://explorer.hiro.so/txid/0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27?chain=testnet) | [`0xac80ca32ec05d71f7ff1a95dcbf122763a61f744dbbeba26cbe4f3273e297fc7`](https://explorer.hiro.so/txid/0xac80ca32ec05d71f7ff1a95dcbf122763a61f744dbbeba26cbe4f3273e297fc7?chain=testnet) |
-| **Status** | **SUCCESS (Confirmed On-Chain)** | Confirmed On-Chain |
-| **Key Capability** | On-chain project metadata (`title`, `description`) | Core block escrow |
-| **Hiro Explorer** | [View Active Contract on Hiro Explorer ↗](https://explorer.hiro.so/txid/0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27?chain=testnet) | [View Milestone v1 ↗](https://explorer.hiro.so/txid/0xac80ca32ec05d71f7ff1a95dcbf122763a61f744dbbeba26cbe4f3273e297fc7?chain=testnet) |
+| Parameter | Value |
+| :--- | :--- |
+| **Contract Name** | `crowdfund-v2` |
+| **Contract Address** | `ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9.crowdfund-v2` |
+| **Deployment Transaction** | [`0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27`](https://explorer.hiro.so/txid/0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27?chain=testnet) |
+| **Status** | **SUCCESS (Confirmed On-Chain)** |
+| **Key Features** | 100% On-Chain Metadata (`title`, `description`), Autonomous Escrow, Guaranteed Refunds |
+| **Hiro Testnet Explorer** | [View Contract on Hiro Explorer ↗](https://explorer.hiro.so/txid/0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27?chain=testnet) |
 
 ---
 
@@ -101,7 +99,7 @@ stacks-raise/
 │   ├── Clarinet.toml                     # Clarinet project configuration
 │   ├── contracts/
 │   │   ├── crowdfund-v2.clar             # Active Clarity contract with on-chain project metadata
-│   │   └── crowdfund.clar                # Historical v1 deployment contract
+│   │   └── crowdfund.clar                # Base Clarity crowdfunding contract
 │   ├── deployments/
 │   │   ├── default.simnet-plan.yaml      # Clarinet simnet plan for in-memory unit tests
 │   │   └── default.testnet-plan.yaml     # Live testnet deployment record
