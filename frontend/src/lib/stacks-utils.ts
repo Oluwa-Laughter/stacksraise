@@ -3,6 +3,8 @@ export const MICROSTX_PER_STX = 1_000_000n;
 export interface CampaignData {
   id: number;
   creator: string;
+  title: string;
+  description: string;
   targetStx: bigint;
   raisedStx: bigint;
   endBlock: number;
@@ -143,6 +145,19 @@ export function extractClarityPrincipal(raw: unknown): string | null {
   return null;
 }
 
+/** Safely unpacks Clarity string (ascii or utf8) */
+export function extractClarityString(raw: unknown): string {
+  if (raw === null || raw === undefined) return '';
+  if (typeof raw === 'string') return raw;
+  if (typeof raw === 'object') {
+    const obj = raw as Record<string, any>;
+    if (typeof obj.value === 'string') return obj.value;
+    if (typeof obj.data === 'string') return obj.data;
+    if ('value' in obj) return extractClarityString(obj.value);
+  }
+  return '';
+}
+
 /** Unpacks a Campaign tuple from Clarity read-only result */
 export function extractClarityCampaign(id: number, raw: unknown): CampaignData | null {
   if (!raw || typeof raw !== 'object') return null;
@@ -151,6 +166,8 @@ export function extractClarityCampaign(id: number, raw: unknown): CampaignData |
   if (!data || typeof data !== 'object') return null;
 
   const creator = extractClarityPrincipal(data['creator'] ?? data.creator);
+  const title = extractClarityString(data['title'] ?? data.title) || `Project #${id}`;
+  const description = extractClarityString(data['description'] ?? data.description) || '';
   const targetStx = extractClarityUint(data['target-stx'] ?? data.targetStx ?? data['target_stx']);
   const raisedStx = extractClarityUint(data['raised-stx'] ?? data.raisedStx ?? data['raised_stx']);
   const endBlock = extractClarityUint(data['end-block'] ?? data.endBlock ?? data['end_block']);
@@ -163,6 +180,8 @@ export function extractClarityCampaign(id: number, raw: unknown): CampaignData |
   return {
     id,
     creator,
+    title,
+    description,
     targetStx,
     raisedStx,
     endBlock: Number(endBlock),

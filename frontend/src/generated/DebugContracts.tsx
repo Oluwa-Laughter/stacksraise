@@ -8,35 +8,35 @@ import Message from '@/components/Message';
 
 
 
-import { useCrowdfund_ClaimFunds } from './hooks';
+import { useCrowdfundV2_ClaimFunds } from './hooks';
 
 
 
-import { useCrowdfund_ClaimRefund } from './hooks';
+import { useCrowdfundV2_ClaimRefund } from './hooks';
 
 
 
-import { useCrowdfund_CreateCampaign } from './hooks';
+import { useCrowdfundV2_CreateCampaign } from './hooks';
 
 
 
-import { useCrowdfund_FundCampaign } from './hooks';
+import { useCrowdfundV2_FundCampaign } from './hooks';
 
 
 
-import { useCrowdfund_GetCampaign } from './hooks';
+import { useCrowdfundV2_GetCampaign } from './hooks';
 
 
 
-import { useCrowdfund_GetCampaignCount } from './hooks';
+import { useCrowdfundV2_GetCampaignCount } from './hooks';
 
 
 
-import { useCrowdfund_GetContribution } from './hooks';
+import { useCrowdfundV2_GetContribution } from './hooks';
 
 
 
-import { useCrowdfund_GetCurrentBlockHeight } from './hooks';
+import { useCrowdfundV2_GetCurrentBlockHeight } from './hooks';
 
 
 
@@ -334,7 +334,7 @@ export default function DebugContracts() {
   const [activeTab, setActiveTab] = useState<'write' | 'read'>('write');
   const [hoveredTab, setHoveredTab] = useState<'write' | 'read' | null>(null);
   // Initialize with the first contract name to drop it down on load
-  const [openContract, setOpenContract] = useState<string | null>("crowdfund");
+  const [openContract, setOpenContract] = useState<string | null>("crowdfund-v2");
   const [openFunction, setOpenFunction] = useState<string | null>(null);
 
   return (
@@ -355,19 +355,19 @@ export default function DebugContracts() {
         <button 
           style={S.panelBtn} 
           onClick={() => {
-            setOpenContract(openContract === "crowdfund" ? null : "crowdfund");
+            setOpenContract(openContract === "crowdfund-v2" ? null : "crowdfund-v2");
             setOpenFunction(null); // Close functions when switching contracts
           }}
         >
           <div style={Object.assign({ display: 'flex', alignItems: 'center' })}>
             <div style={S.panelBar} />
-            <span style={S.panelName}>Crowdfund</span>
+            <span style={S.panelName}>Crowdfund-v2</span>
             <span style={S.panelExt}>.clar</span>
           </div>
-          <span style={S.headerTag}>{openContract === "crowdfund" ? '▲' : '▼'}</span>
+          <span style={S.headerTag}>{openContract === "crowdfund-v2" ? '▲' : '▼'}</span>
         </button>
 
-        {openContract === "crowdfund" && (
+        {openContract === "crowdfund-v2" && (
           <div style={Object.assign({ padding: '20px', width:'100%' })} className='space-y-4'>
             
             
@@ -380,10 +380,10 @@ export default function DebugContracts() {
               
               
                 {activeTab === 'write' && (
-                  <FunctionCard_Crowdfund_ClaimFunds 
+                  <FunctionCard_CrowdfundV2_ClaimFunds 
                     num="00"
-                    isOpen={openFunction === "crowdfund_claim-funds"}
-                    onToggle={() => setOpenFunction(openFunction === "crowdfund_claim-funds" ? null : "crowdfund_claim-funds")}
+                    isOpen={openFunction === "crowdfund-v2_claim-funds"}
+                    onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_claim-funds" ? null : "crowdfund-v2_claim-funds")}
                   />
                 )}
               
@@ -399,10 +399,10 @@ export default function DebugContracts() {
               
               
                 {activeTab === 'write' && (
-                  <FunctionCard_Crowdfund_ClaimRefund 
+                  <FunctionCard_CrowdfundV2_ClaimRefund 
                     num="01"
-                    isOpen={openFunction === "crowdfund_claim-refund"}
-                    onToggle={() => setOpenFunction(openFunction === "crowdfund_claim-refund" ? null : "crowdfund_claim-refund")}
+                    isOpen={openFunction === "crowdfund-v2_claim-refund"}
+                    onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_claim-refund" ? null : "crowdfund-v2_claim-refund")}
                   />
                 )}
               
@@ -418,10 +418,10 @@ export default function DebugContracts() {
               
               
                 {activeTab === 'write' && (
-                  <FunctionCard_Crowdfund_CreateCampaign 
+                  <FunctionCard_CrowdfundV2_CreateCampaign 
                     num="02"
-                    isOpen={openFunction === "crowdfund_create-campaign"}
-                    onToggle={() => setOpenFunction(openFunction === "crowdfund_create-campaign" ? null : "crowdfund_create-campaign")}
+                    isOpen={openFunction === "crowdfund-v2_create-campaign"}
+                    onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_create-campaign" ? null : "crowdfund-v2_create-campaign")}
                   />
                 )}
               
@@ -437,10 +437,10 @@ export default function DebugContracts() {
               
               
                 {activeTab === 'write' && (
-                  <FunctionCard_Crowdfund_FundCampaign 
+                  <FunctionCard_CrowdfundV2_FundCampaign 
                     num="03"
-                    isOpen={openFunction === "crowdfund_fund-campaign"}
-                    onToggle={() => setOpenFunction(openFunction === "crowdfund_fund-campaign" ? null : "crowdfund_fund-campaign")}
+                    isOpen={openFunction === "crowdfund-v2_fund-campaign"}
+                    onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_fund-campaign" ? null : "crowdfund-v2_fund-campaign")}
                   />
                 )}
               
@@ -456,10 +456,10 @@ export default function DebugContracts() {
               
               
   {activeTab === 'read' && (
-    <FunctionCard_Crowdfund_GetCampaign 
+    <FunctionCard_CrowdfundV2_GetCampaign 
       num="04"
-      isOpen={openFunction === "crowdfund_get-campaign"}
-      onToggle={() => setOpenFunction(openFunction === "crowdfund_get-campaign" ? null : "crowdfund_get-campaign")}
+      isOpen={openFunction === "crowdfund-v2_get-campaign"}
+      onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_get-campaign" ? null : "crowdfund-v2_get-campaign")}
     />
   )}
               
@@ -475,10 +475,10 @@ export default function DebugContracts() {
               
               
   {activeTab === 'read' && (
-    <FunctionCard_Crowdfund_GetCampaignCount 
+    <FunctionCard_CrowdfundV2_GetCampaignCount 
       num="05"
-      isOpen={openFunction === "crowdfund_get-campaign-count"}
-      onToggle={() => setOpenFunction(openFunction === "crowdfund_get-campaign-count" ? null : "crowdfund_get-campaign-count")}
+      isOpen={openFunction === "crowdfund-v2_get-campaign-count"}
+      onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_get-campaign-count" ? null : "crowdfund-v2_get-campaign-count")}
     />
   )}
               
@@ -494,10 +494,10 @@ export default function DebugContracts() {
               
               
   {activeTab === 'read' && (
-    <FunctionCard_Crowdfund_GetContribution 
+    <FunctionCard_CrowdfundV2_GetContribution 
       num="06"
-      isOpen={openFunction === "crowdfund_get-contribution"}
-      onToggle={() => setOpenFunction(openFunction === "crowdfund_get-contribution" ? null : "crowdfund_get-contribution")}
+      isOpen={openFunction === "crowdfund-v2_get-contribution"}
+      onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_get-contribution" ? null : "crowdfund-v2_get-contribution")}
     />
   )}
               
@@ -513,10 +513,10 @@ export default function DebugContracts() {
               
               
   {activeTab === 'read' && (
-    <FunctionCard_Crowdfund_GetCurrentBlockHeight 
+    <FunctionCard_CrowdfundV2_GetCurrentBlockHeight 
       num="07"
-      isOpen={openFunction === "crowdfund_get-current-block-height"}
-      onToggle={() => setOpenFunction(openFunction === "crowdfund_get-current-block-height" ? null : "crowdfund_get-current-block-height")}
+      isOpen={openFunction === "crowdfund-v2_get-current-block-height"}
+      onToggle={() => setOpenFunction(openFunction === "crowdfund-v2_get-current-block-height" ? null : "crowdfund-v2_get-current-block-height")}
     />
   )}
               
@@ -551,8 +551,8 @@ function ContractPanel({ name, children }: { name: string; children: React.React
 
 
 
-function FunctionCard_Crowdfund_ClaimFunds({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_ClaimFunds();
+function FunctionCard_CrowdfundV2_ClaimFunds({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_ClaimFunds();
   const isReadOnly = false;
 
   
@@ -631,8 +631,8 @@ function FunctionCard_Crowdfund_ClaimFunds({ num, isOpen, onToggle }: { num: str
 
 
 
-function FunctionCard_Crowdfund_ClaimRefund({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_ClaimRefund();
+function FunctionCard_CrowdfundV2_ClaimRefund({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_ClaimRefund();
   const isReadOnly = false;
 
   
@@ -711,13 +711,13 @@ function FunctionCard_Crowdfund_ClaimRefund({ num, isOpen, onToggle }: { num: st
 
 
 
-function FunctionCard_Crowdfund_CreateCampaign({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_CreateCampaign();
+function FunctionCard_CrowdfundV2_CreateCampaign({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_CreateCampaign();
   const isReadOnly = false;
 
   
   const [args, setArgs] = useState<Record<string, string>>({
-    'target-stx': '', 'duration-blocks': '', 
+    'title': '', 'description': '', 'target-stx': '', 'duration-blocks': '', 
   });
   const setArg = (name: string, value: string) => setArgs(a => Object.assign({}, a, { [name]: value }));
   
@@ -737,8 +737,22 @@ function FunctionCard_Crowdfund_CreateCampaign({ num, isOpen, onToggle }: { num:
       </div>
 
       <div style={Object.assign({}, S.formContainer, { maxHeight: isOpen ? '1000px' : '0px', opacity: isOpen ? 1 : 0, marginTop: isOpen ? '20px' : '0px' })}>
-        <form style={S.form} onSubmit={async (e) => { e.preventDefault(); await call([toClarityValue(args['target-stx'] ?? '', "uint128", 'target-stx'),toClarityValue(args['duration-blocks'] ?? '', "uint128", 'duration-blocks'),]); }}>
+        <form style={S.form} onSubmit={async (e) => { e.preventDefault(); await call([toClarityValue(args['title'] ?? '', {"string-ascii":{"length":64}}, 'title'),toClarityValue(args['description'] ?? '', {"string-utf8":{"length":256}}, 'description'),toClarityValue(args['target-stx'] ?? '', "uint128", 'target-stx'),toClarityValue(args['duration-blocks'] ?? '', "uint128", 'duration-blocks'),]); }}>
           
+            
+            <div>
+              <label style={S.argLabel}>title <span style={S.argType}>STRING-ASCII</span></label>
+              
+              <input style={S.argInput} value={args['title']} onChange={e => setArg('title', e.target.value)} />
+              
+            </div>
+            
+            <div>
+              <label style={S.argLabel}>description <span style={S.argType}>STRING-UTF8</span></label>
+              
+              <input style={S.argInput} value={args['description']} onChange={e => setArg('description', e.target.value)} />
+              
+            </div>
             
             <div>
               <label style={S.argLabel}>target-stx <span style={S.argType}>UINT128</span></label>
@@ -798,8 +812,8 @@ function FunctionCard_Crowdfund_CreateCampaign({ num, isOpen, onToggle }: { num:
 
 
 
-function FunctionCard_Crowdfund_FundCampaign({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_FundCampaign();
+function FunctionCard_CrowdfundV2_FundCampaign({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_FundCampaign();
   const isReadOnly = false;
 
   
@@ -885,8 +899,8 @@ function FunctionCard_Crowdfund_FundCampaign({ num, isOpen, onToggle }: { num: s
 
 
 
-function FunctionCard_Crowdfund_GetCampaign({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_GetCampaign();
+function FunctionCard_CrowdfundV2_GetCampaign({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_GetCampaign();
   const isReadOnly = true;
 
   
@@ -965,8 +979,8 @@ function FunctionCard_Crowdfund_GetCampaign({ num, isOpen, onToggle }: { num: st
 
 
 
-function FunctionCard_Crowdfund_GetCampaignCount({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_GetCampaignCount();
+function FunctionCard_CrowdfundV2_GetCampaignCount({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_GetCampaignCount();
   const isReadOnly = true;
 
   
@@ -1031,8 +1045,8 @@ function FunctionCard_Crowdfund_GetCampaignCount({ num, isOpen, onToggle }: { nu
 
 
 
-function FunctionCard_Crowdfund_GetContribution({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_GetContribution();
+function FunctionCard_CrowdfundV2_GetContribution({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_GetContribution();
   const isReadOnly = true;
 
   
@@ -1118,8 +1132,8 @@ function FunctionCard_Crowdfund_GetContribution({ num, isOpen, onToggle }: { num
 
 
 
-function FunctionCard_Crowdfund_GetCurrentBlockHeight({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
-  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfund_GetCurrentBlockHeight();
+function FunctionCard_CrowdfundV2_GetCurrentBlockHeight({ num, isOpen, onToggle }: { num: string, isOpen: boolean, onToggle: () => void }) {
+  const { data, loading, txid, txStatus, txStatusError, explorerUrl, call } = useCrowdfundV2_GetCurrentBlockHeight();
   const isReadOnly = true;
 
   

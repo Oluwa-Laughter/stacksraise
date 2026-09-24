@@ -21,7 +21,7 @@ function isTransientTxPollHttpStatus(status: number): boolean {
 
 
 
-export function useCrowdfund_ClaimFunds() {
+export function useCrowdfundV2_ClaimFunds() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -40,7 +40,7 @@ export function useCrowdfund_ClaimFunds() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_claimFunds;
+      const fn = (contracts as any).crowdfundV2_claimFunds;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -165,7 +165,7 @@ export function useCrowdfund_ClaimFunds() {
 
 
 
-export function useCrowdfund_ClaimRefund() {
+export function useCrowdfundV2_ClaimRefund() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -184,7 +184,7 @@ export function useCrowdfund_ClaimRefund() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_claimRefund;
+      const fn = (contracts as any).crowdfundV2_claimRefund;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -309,7 +309,7 @@ export function useCrowdfund_ClaimRefund() {
 
 
 
-export function useCrowdfund_CreateCampaign() {
+export function useCrowdfundV2_CreateCampaign() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -328,7 +328,7 @@ export function useCrowdfund_CreateCampaign() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_createCampaign;
+      const fn = (contracts as any).crowdfundV2_createCampaign;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -453,7 +453,7 @@ export function useCrowdfund_CreateCampaign() {
 
 
 
-export function useCrowdfund_FundCampaign() {
+export function useCrowdfundV2_FundCampaign() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -472,7 +472,7 @@ export function useCrowdfund_FundCampaign() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_fundCampaign;
+      const fn = (contracts as any).crowdfundV2_fundCampaign;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -597,7 +597,7 @@ export function useCrowdfund_FundCampaign() {
 
 
 
-export function useCrowdfund_GetCampaign() {
+export function useCrowdfundV2_GetCampaign() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -616,7 +616,7 @@ export function useCrowdfund_GetCampaign() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_getCampaign;
+      const fn = (contracts as any).crowdfundV2_getCampaign;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -741,7 +741,7 @@ export function useCrowdfund_GetCampaign() {
 
 
 
-export function useCrowdfund_GetCampaignCount() {
+export function useCrowdfundV2_GetCampaignCount() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -760,7 +760,7 @@ export function useCrowdfund_GetCampaignCount() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_getCampaignCount;
+      const fn = (contracts as any).crowdfundV2_getCampaignCount;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -885,7 +885,7 @@ export function useCrowdfund_GetCampaignCount() {
 
 
 
-export function useCrowdfund_GetContribution() {
+export function useCrowdfundV2_GetContribution() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -904,7 +904,7 @@ export function useCrowdfund_GetContribution() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_getContribution;
+      const fn = (contracts as any).crowdfundV2_getContribution;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -1029,7 +1029,7 @@ export function useCrowdfund_GetContribution() {
 
 
 
-export function useCrowdfund_GetCurrentBlockHeight() {
+export function useCrowdfundV2_GetCurrentBlockHeight() {
   const [data, setData] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -1048,7 +1048,7 @@ export function useCrowdfund_GetCurrentBlockHeight() {
     setTxStatusError(null);
     try {
       // Use the generated contract function from the index
-      const fn = (contracts as any).crowdfund_getCurrentBlockHeight;
+      const fn = (contracts as any).crowdfundV2_getCurrentBlockHeight;
       
       const result = isReadOnly 
         ? await fn(functionArgs) 
@@ -1171,4 +1171,11 @@ export function useCrowdfund_GetCurrentBlockHeight() {
   return { data, loading, error, txid, txStatus, txStatusError, explorerUrl, call };
 }
 
-
+export const useCrowdfund_ClaimFunds = useCrowdfundV2_ClaimFunds;
+export const useCrowdfund_ClaimRefund = useCrowdfundV2_ClaimRefund;
+export const useCrowdfund_CreateCampaign = useCrowdfundV2_CreateCampaign;
+export const useCrowdfund_FundCampaign = useCrowdfundV2_FundCampaign;
+export const useCrowdfund_GetCampaign = useCrowdfundV2_GetCampaign;
+export const useCrowdfund_GetCampaignCount = useCrowdfundV2_GetCampaignCount;
+export const useCrowdfund_GetContribution = useCrowdfundV2_GetContribution;
+export const useCrowdfund_GetCurrentBlockHeight = useCrowdfundV2_GetCurrentBlockHeight;

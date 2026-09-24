@@ -7,7 +7,7 @@ requirements = []
 passes = ["check_checker"]
 check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
 
-[contracts.crowdfund]
-path = "contracts/crowdfund.clar"
+[contracts.crowdfund-v2]
+path = "contracts/crowdfund-v2.clar"
 clarity_version = 2
 epoch = "2.5"

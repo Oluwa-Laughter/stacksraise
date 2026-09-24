@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { scaffoldConfig } from '../scaffold.config';
 
 export default function Footer() {
-  const contractAddress = 'ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9.crowdfund';
-  const contractTxId = '0xac80ca32ec05d71f7ff1a95dcbf122763a61f744dbbeba26cbe4f3273e297fc7';
+  const contractAddress = 'ST3E6N4PVNF8H0BJVQQR5A6KA9HMD9DDV5SW988C9.crowdfund-v2';
+  const contractTxId = '0xf175d11ad806e4a51474667a274f2151af9cab792cbbd7b9ceeaaca8051a3d27';
 
   return (
     <footer className="mt-auto border-t border-slate-200 bg-white pt-12 sm:pt-16 pb-12">

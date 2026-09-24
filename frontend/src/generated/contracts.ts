@@ -20,15 +20,15 @@ function getContractId(name: string): { address: string; contractName: string } 
 }
 
 
-// ── crowdfund ──────────────────────
+// ── crowdfund-v2 ──────────────────────
 
 
 
-export async function crowdfund_claimFunds(
+export async function crowdfundV2_claimFunds(
   functionArgs: ClarityValue[] = [],
   postConditions: any[] = [],
 ): Promise<any> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return undefined;
   if (scaffoldConfig.isDevnet) {
     return callDevnetContract({
@@ -52,11 +52,11 @@ export async function crowdfund_claimFunds(
 
 
 
-export async function crowdfund_claimRefund(
+export async function crowdfundV2_claimRefund(
   functionArgs: ClarityValue[] = [],
   postConditions: any[] = [],
 ): Promise<any> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return undefined;
   if (scaffoldConfig.isDevnet) {
     return callDevnetContract({
@@ -80,11 +80,11 @@ export async function crowdfund_claimRefund(
 
 
 
-export async function crowdfund_createCampaign(
+export async function crowdfundV2_createCampaign(
   functionArgs: ClarityValue[] = [],
   postConditions: any[] = [],
 ): Promise<any> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return undefined;
   if (scaffoldConfig.isDevnet) {
     return callDevnetContract({
@@ -108,11 +108,11 @@ export async function crowdfund_createCampaign(
 
 
 
-export async function crowdfund_fundCampaign(
+export async function crowdfundV2_fundCampaign(
   functionArgs: ClarityValue[] = [],
   postConditions: any[] = [],
 ): Promise<any> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return undefined;
   if (scaffoldConfig.isDevnet) {
     return callDevnetContract({
@@ -137,11 +137,11 @@ export async function crowdfund_fundCampaign(
 
 
 
-export async function crowdfund_getCampaign(
+export async function crowdfundV2_getCampaign(
   functionArgs: ClarityValue[] = [],
   senderAddress?: string
 ): Promise<unknown> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return null;
   const result = await fetchCallReadOnlyFunction({
     contractAddress: address,
@@ -157,11 +157,11 @@ export async function crowdfund_getCampaign(
 
 
 
-export async function crowdfund_getCampaignCount(
+export async function crowdfundV2_getCampaignCount(
   functionArgs: ClarityValue[] = [],
   senderAddress?: string
 ): Promise<unknown> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return null;
   const result = await fetchCallReadOnlyFunction({
     contractAddress: address,
@@ -177,11 +177,11 @@ export async function crowdfund_getCampaignCount(
 
 
 
-export async function crowdfund_getContribution(
+export async function crowdfundV2_getContribution(
   functionArgs: ClarityValue[] = [],
   senderAddress?: string
 ): Promise<unknown> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return null;
   const result = await fetchCallReadOnlyFunction({
     contractAddress: address,
@@ -197,11 +197,11 @@ export async function crowdfund_getContribution(
 
 
 
-export async function crowdfund_getCurrentBlockHeight(
+export async function crowdfundV2_getCurrentBlockHeight(
   functionArgs: ClarityValue[] = [],
   senderAddress?: string
 ): Promise<unknown> {
-  const { address, contractName } = getContractId('crowdfund');
+  const { address, contractName } = getContractId('crowdfund-v2');
   if (!address) return null;
   const result = await fetchCallReadOnlyFunction({
     contractAddress: address,
@@ -214,5 +214,11 @@ export async function crowdfund_getCurrentBlockHeight(
   return cvToValue(result);
 }
 
-
-
+export const crowdfund_claimFunds = crowdfundV2_claimFunds;
+export const crowdfund_claimRefund = crowdfundV2_claimRefund;
+export const crowdfund_createCampaign = crowdfundV2_createCampaign;
+export const crowdfund_fundCampaign = crowdfundV2_fundCampaign;
+export const crowdfund_getCampaign = crowdfundV2_getCampaign;
+export const crowdfund_getCampaignCount = crowdfundV2_getCampaignCount;
+export const crowdfund_getContribution = crowdfundV2_getContribution;
+export const crowdfund_getCurrentBlockHeight = crowdfundV2_getCurrentBlockHeight;

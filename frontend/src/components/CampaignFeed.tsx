@@ -51,7 +51,10 @@ export function CampaignFeed({
     onCampaignsLoadedRef.current = onCampaignsLoaded;
   }, [onCampaignsLoaded]);
 
-  const contractDeployed = Boolean((deployments as any)?.contracts?.crowdfund?.contract_id);
+  const contractDeployed = Boolean(
+    (deployments as any)?.contracts?.['crowdfund-v2']?.contract_id ||
+    (deployments as any)?.contracts?.crowdfund?.contract_id
+  );
 
   const loadAllCampaigns = useCallback(
     async (manual: boolean = false) => {

@@ -73,6 +73,9 @@ export function CampaignCard({
     txStatus: claimRefundStatus,
   } = useCrowdfund_ClaimRefund();
 
+  const isClaimingFunds = claimingFunds || claimFundsStatus === 'pending';
+  const isClaimingRefund = claimingRefund || claimRefundStatus === 'pending';
+
   const handleClaimFunds = async () => {
     try {
       await callClaimFunds([Cl.uint(campaign.id)]);
@@ -93,7 +96,7 @@ export function CampaignCard({
 
   // Remaining blocks calculation
   const remainingBlocks = Math.max(0, campaign.endBlock - currentBlock);
-  const isExpired = currentBlock >= campaign.endBlock;
+  const isExpired = currentBlock > 0 && currentBlock >= campaign.endBlock;
   const isGoalMet = campaign.raisedStx >= campaign.targetStx;
   const isCreator =
     connectedAddress &&
@@ -115,7 +118,7 @@ export function CampaignCard({
     >
       <div>
         {/* Header: Campaign ID & Status Badge */}
-        <div className="flex items-center justify-between gap-2 mb-4">
+        <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-xs font-mono font-bold text-slate-800">
               #{campaign.id}
@@ -154,6 +157,22 @@ export function CampaignCard({
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
               EXPIRED / MISSED
             </span>
+          )}
+        </div>
+
+        {/* Project Title & Mission Statement */}
+        <div className="mb-4">
+          <h4 className="text-base font-bold text-[#0F172A] font-instrument leading-snug line-clamp-1">
+            {campaign.title || `Campaign #${campaign.id}`}
+          </h4>
+          {campaign.description ? (
+            <p className="text-xs text-slate-600 line-clamp-2 mt-1 leading-relaxed">
+              {campaign.description}
+            </p>
+          ) : (
+            <p className="text-xs text-slate-400 italic mt-1">
+              Decentralized crowdfunding campaign on Stacks L2
+            </p>
           )}
         </div>
 
@@ -244,10 +263,20 @@ export function CampaignCard({
           <div className="flex flex-col gap-1.5">
             <button
               onClick={handleClaimFunds}
-              disabled={claimingFunds}
-              className="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] disabled:opacity-50"
+              disabled={isClaimingFunds}
+              className="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {claimingFunds ? 'Claiming Funds...' : `Claim ${formatStx(campaign.raisedStx)} STX (Creator)`}
+              {isClaimingFunds ? (
+                <>
+                  <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  <span>Claiming Funds on Stacks...</span>
+                </>
+              ) : (
+                `Claim ${formatStx(campaign.raisedStx)} STX (Creator)`
+              )}
             </button>
             {claimFundsTxid && (
               <a
@@ -267,10 +296,20 @@ export function CampaignCard({
           <div className="flex flex-col gap-1.5">
             <button
               onClick={handleClaimRefund}
-              disabled={claimingRefund}
-              className="w-full py-2.5 px-4 rounded-lg bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] disabled:opacity-50"
+              disabled={isClaimingRefund}
+              className="w-full py-2.5 px-4 rounded-lg bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {claimingRefund ? 'Processing Refund...' : `Claim Refund (${formatStx(userContribution)} STX)`}
+              {isClaimingRefund ? (
+                <>
+                  <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  <span>Processing Refund on Stacks...</span>
+                </>
+              ) : (
+                `Claim Refund (${formatStx(userContribution)} STX)`
+              )}
             </button>
             {claimRefundTxid && (
               <a

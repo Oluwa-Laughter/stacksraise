@@ -40,8 +40,8 @@ plan:
   - id: 0
     transactions:
     - transaction-type: emulated-contract-publish
-      contract-name: crowdfund
+      contract-name: crowdfund-v2
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-      path: contracts/crowdfund.clar
+      path: contracts/crowdfund-v2.clar
       clarity-version: 2
     epoch: '2.5'
