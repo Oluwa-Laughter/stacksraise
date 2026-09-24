@@ -56,26 +56,85 @@ The active, feature-complete contract (`crowdfund-v2`) is deployed and fully ver
 ## 🏗 System Architecture
 
 ```mermaid
-graph TD
-    User([Backer / Creator]) -->|Connects Multi-Wallet| Wallet[Xverse / Leather / Stacks Connect v8]
-    Wallet -->|Signs Clarity Calls| NextApp[Next.js 15 Client Frontend]
-    
-    subgraph Frontend Layer [Next.js App Router & Tailwind CSS]
-        LandingPage["/ (Landing Page & Trustless Escrow Explainer)"]
-        Dashboard["/dashboard (Live Campaign Feed & Actions)"]
-        APIProxies["/api/stacks/* (Server-side Node Proxies & Edge Cache)"]
+flowchart TD
+    subgraph Users ["1. Users & Wallet Signers"]
+        Creator["Project Creator"]
+        Backer["Community Backer"]
+        Wallet["Stacks Multi-Wallet\nXverse / Leather / Stacks Connect v8"]
+        Creator --> Wallet
+        Backer --> Wallet
     end
-    
-    NextApp --> LandingPage
-    NextApp --> Dashboard
-    Dashboard --> APIProxies
-    
-    subgraph Stacks Blockchain [Stacks Layer 2 & Bitcoin L1]
-        APIProxies -->|Read Chain Tip & Balance| HiroNode[(Hiro Testnet Node)]
-        Wallet -->|Broadcasts Transactions| HiroNode
-        HiroNode --> ClarityContract[crowdfund-v2.clar Smart Contract]
-        ClarityContract -->|Block-Height Settlement| BitcoinL1[(Bitcoin Consensus L1)]
+
+    subgraph Frontend ["2. Frontend Web Application (Next.js 15 & Tailwind CSS)"]
+        UI_Landing["Landing Page\nEscrow Explainer & Architecture"]
+        UI_Dashboard["Campaigns Dashboard\nLive Feed, Metrics & Zone Routing"]
+        UI_Modals["Interactive Modals\nRegister Campaign & STX Contribution"]
+        Wallet --> UI_Landing
+        Wallet --> UI_Dashboard
+        UI_Dashboard --> UI_Modals
     end
+
+    subgraph Server ["3. Server-Side Infrastructure (Next.js Edge Routes)"]
+        Proxy_Info["/api/stacks/info\nNode Info & Tenure Block Height"]
+        Proxy_Balance["/api/stacks/balance\nReal-time STX Wallet Balance"]
+        UI_Dashboard --> Proxy_Info
+        UI_Dashboard --> Proxy_Balance
+    end
+
+    subgraph Consensus ["4. Blockchain Consensus Layer (Stacks L2 & Bitcoin L1)"]
+        Node["Hiro Stacks Testnet RPC Node"]
+        Contract["crowdfund-v2.clar Smart Contract\nAutonomous Escrow Vault & Project Registry"]
+        Bitcoin["Bitcoin Consensus L1\nTenure Block Height & Finality"]
+
+        Proxy_Info -->|Fetch Chain State| Node
+        Proxy_Balance -->|Fetch Balance| Node
+        UI_Modals -->|Broadcast Signed Tx| Node
+        Node -->|Mutate & Read State| Contract
+        Contract -->|Enforce Block Deadlines| Bitcoin
+    end
+
+    classDef orange fill:#FFF7ED,stroke:#FF5500,stroke-width:2px,color:#0F172A;
+    classDef blue fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#0F172A;
+    classDef gray fill:#F8FAFC,stroke:#64748B,stroke-width:2px,color:#0F172A;
+    classDef dark fill:#0F172A,stroke:#334155,stroke-width:2px,color:#FFFFFF;
+
+    class Creator,Backer,Wallet orange;
+    class UI_Landing,UI_Dashboard,UI_Modals blue;
+    class Proxy_Info,Proxy_Balance gray;
+    class Node,Contract,Bitcoin dark;
+```
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                   Backer / Creator Wallet                   │
+│               (Xverse / Leather / Asigna)                   │
+└──────────────┬──────────────────────────────┬───────────────┘
+               │ Connect & Sign               │ Read State
+               ▼                              ▼
+┌──────────────────────────────┐    ┌─────────────────────────┐
+│     Next.js 15 Frontend      │    │  Next.js Server Proxies │
+│  - Landing Page & Escrow UI  │    │  - /api/stacks/info     │
+│  - Dashboard & Zone Filters  ├────►  - /api/stacks/balance  │
+│  - Creation & Funding Modals │    └────────────┬────────────┘
+└──────────────┬───────────────┘                 │
+               │ Broadcast Signed Tx             │ Read Tip / Balances
+               ▼                                 ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 Hiro Stacks Testnet Node                    │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Execute Clarity Logic
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│           crowdfund-v2.clar Smart Contract                  │
+│  - 100% Non-Custodial Escrow Vault                          │
+│  - On-Chain Project Name & Mission Registry                 │
+│  - Automated Guaranteed Refunds if Target Missed            │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Enforce Block-Height Deadlines
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│               Bitcoin Consensus Layer (L1)                  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### Architecture Highlights:
