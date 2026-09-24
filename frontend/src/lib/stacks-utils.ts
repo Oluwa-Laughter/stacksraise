@@ -170,11 +170,27 @@ export function extractClarityCampaign(id: number, raw: unknown): CampaignData |
   };
 }
 
-/** Fetches live chain tip block height from Hiro node API */
+/** Fetches live chain tip block height from internal proxy or Hiro node API */
 export async function fetchLiveChainTip(nodeUrl: string = 'https://api.testnet.hiro.so'): Promise<{
   stacksTip: number;
   burnBlock: number;
 }> {
+  // Try internal API proxy in browser first to bypass adblockers/CORS issues
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch('/api/stacks/info', { cache: 'no-store' });
+      if (res.ok) {
+        const json = await res.json();
+        return {
+          stacksTip: Number(json.stacks_tip_height ?? 0),
+          burnBlock: Number(json.burn_block_height ?? 0),
+        };
+      }
+    } catch {
+      // Fallback to direct node URL
+    }
+  }
+
   try {
     const res = await fetch(`${nodeUrl}/v2/info`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -189,12 +205,28 @@ export async function fetchLiveChainTip(nodeUrl: string = 'https://api.testnet.h
   }
 }
 
-/** Fetches live STX balance for an address from Hiro API */
+/** Fetches live STX balance for an address from internal proxy or Hiro API */
 export async function fetchAddressStxBalance(
   address: string,
   nodeUrl: string = 'https://api.testnet.hiro.so'
 ): Promise<bigint> {
   if (!address) return 0n;
+
+  // Try internal API proxy in browser first
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch(`/api/stacks/balance?address=${encodeURIComponent(address)}`, {
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return BigInt(json?.stx?.balance ?? '0');
+      }
+    } catch {
+      // Fallback to direct node URL
+    }
+  }
+
   try {
     const res = await fetch(`${nodeUrl}/extended/v1/address/${address}/balances`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

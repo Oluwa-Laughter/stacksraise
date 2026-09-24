@@ -9,11 +9,13 @@ node_modules/
 .env.local
 .env.*.local
 
-# Clarinet devnet / generated settings (keep Devnet.toml, Testnet.toml, Mainnet.toml tracked)
+# Clarinet devnet / generated settings
 contracts/.cache/
 contracts/.devnet/
 contracts/settings/Simnet.toml
 contracts/settings/Epoch*.toml
+contracts/settings/Testnet.toml
+contracts/settings/Mainnet.toml
 
 # Next.js build
 frontend/.next/

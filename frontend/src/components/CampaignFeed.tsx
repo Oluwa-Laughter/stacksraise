@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Cl } from '@stacks/transactions';
 import { CampaignCard } from './CampaignCard';
 import {
@@ -28,72 +28,84 @@ export function CampaignFeed({
   onCampaignsLoaded,
 }: CampaignFeedProps) {
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<FilterTab>('ALL');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { call: fetchCount } = useCrowdfund_GetCampaignCount();
 
+  // Stable callback ref to prevent infinite re-render loops
+  const onCampaignsLoadedRef = useRef(onCampaignsLoaded);
+  useEffect(() => {
+    onCampaignsLoadedRef.current = onCampaignsLoaded;
+  }, [onCampaignsLoaded]);
+
   const contractDeployed = Boolean((deployments as any)?.contracts?.crowdfund?.contract_id);
 
-  const loadAllCampaigns = useCallback(async (manual: boolean = false) => {
-    if (manual) setIsRefreshing(true);
-    setLoading(true);
-    setErrorMsg(null);
+  const loadAllCampaigns = useCallback(
+    async (manual: boolean = false) => {
+      if (manual) setIsRefreshing(true);
+      setErrorMsg(null);
 
-    try {
-      // 1. Fetch total count from on-chain getter
-      const countRes = await fetchCount([]);
-      const totalCountBig = extractClarityUint(countRes);
-      const totalCount = totalCountBig !== null ? Number(totalCountBig) : 0;
+      try {
+        // 1. Fetch total count from on-chain getter
+        const countRes = await fetchCount([]);
+        const totalCountBig = extractClarityUint(countRes);
+        const totalCount = totalCountBig !== null ? Number(totalCountBig) : 0;
 
-      if (totalCount === 0) {
-        setCampaigns([]);
-        onCampaignsLoaded?.([]);
-        return;
-      }
+        if (totalCount === 0) {
+          setCampaigns([]);
+          onCampaignsLoadedRef.current?.([]);
+          return;
+        }
 
-      // 2. Fetch each campaign dynamically from ID 1 to totalCount
-      const promises: Promise<CampaignData | null>[] = [];
-      for (let id = 1; id <= totalCount; id++) {
-        promises.push(
-          crowdfund_getCampaign([Cl.uint(id)])
-            .then((raw) => extractClarityCampaign(id, raw))
-            .catch((err) => {
-              console.warn(`Failed to fetch campaign #${id}:`, err);
-              return null;
-            })
+        // 2. Fetch each campaign dynamically from ID 1 to totalCount
+        const promises: Promise<CampaignData | null>[] = [];
+        for (let id = 1; id <= totalCount; id++) {
+          promises.push(
+            crowdfund_getCampaign([Cl.uint(id)])
+              .then((raw) => extractClarityCampaign(id, raw))
+              .catch((err) => {
+                console.warn(`Failed to fetch campaign #${id}:`, err);
+                return null;
+              })
+          );
+        }
+
+        const results = await Promise.all(promises);
+        const validCampaigns = results.filter((c): c is CampaignData => c !== null);
+
+        // Sort newest campaign first
+        validCampaigns.sort((a, b) => b.id - a.id);
+
+        setCampaigns(validCampaigns);
+        onCampaignsLoadedRef.current?.(validCampaigns);
+      } catch (err: any) {
+        console.warn('Failed to fetch on-chain campaigns:', err);
+        setErrorMsg(
+          err?.message ||
+            'Could not fetch on-chain campaigns. Verify your network connection and contract deployment.'
         );
+      } finally {
+        setInitialLoading(false);
+        if (manual) {
+          setTimeout(() => setIsRefreshing(false), 500);
+        }
       }
+    },
+    [fetchCount]
+  );
 
-      const results = await Promise.all(promises);
-      const validCampaigns = results.filter((c): c is CampaignData => c !== null);
-      
-      // Sort newest campaign first
-      validCampaigns.sort((a, b) => b.id - a.id);
-
-      setCampaigns(validCampaigns);
-      onCampaignsLoaded?.(validCampaigns);
-    } catch (err: any) {
-      console.warn('Failed to fetch on-chain campaigns:', err);
-      // If contract is not yet deployed or RPC returned error, handle gracefully
-      setErrorMsg(
-        err?.message ||
-          'Could not fetch on-chain campaigns. Verify your network connection and contract deployment.'
-      );
-      setCampaigns([]);
-      onCampaignsLoaded?.([]);
-    } finally {
-      setLoading(false);
-      if (manual) {
-        setTimeout(() => setIsRefreshing(false), 500);
-      }
-    }
-  }, [fetchCount, onCampaignsLoaded]);
-
+  // Load once on mount, then poll smoothly every 30s without flickering skeletons
   useEffect(() => {
-    loadAllCampaigns();
+    loadAllCampaigns(false);
+
+    const interval = setInterval(() => {
+      loadAllCampaigns(false);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [loadAllCampaigns]);
 
   // Filter campaigns according to active tab
@@ -155,7 +167,7 @@ export function CampaignFeed({
         {/* Refresh button */}
         <button
           onClick={() => loadAllCampaigns(true)}
-          disabled={loading}
+          disabled={isRefreshing}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-600 hover:text-[#0F172A] hover:border-slate-300 shadow-sm transition-colors self-start sm:self-auto"
         >
           <svg
@@ -196,8 +208,8 @@ export function CampaignFeed({
         </div>
       )}
 
-      {/* Loading Skeletons */}
-      {loading && campaigns.length === 0 && (
+      {/* Initial Loading Skeletons — only shown on very first mount */}
+      {initialLoading && campaigns.length === 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <div
@@ -220,7 +232,7 @@ export function CampaignFeed({
       )}
 
       {/* Empty State Card (Strict Rule: Zero mock data, prompt user to create first on-chain campaign) */}
-      {!loading && campaigns.length === 0 && (
+      {!initialLoading && campaigns.length === 0 && (
         <div className="bg-white border border-slate-200 rounded-2xl p-10 sm:p-14 text-center shadow-sm">
           <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200 text-[#FF5500] flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -253,15 +265,15 @@ export function CampaignFeed({
         </div>
       )}
 
-      {/* Filtered Empty State (e.g., no active or no ended campaigns) */}
-      {!loading && campaigns.length > 0 && filteredCampaigns.length === 0 && (
+      {/* Filtered Empty State */}
+      {!initialLoading && campaigns.length > 0 && filteredCampaigns.length === 0 && (
         <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-sm">
           No campaigns match the &quot;{activeTab}&quot; filter.
         </div>
       )}
 
       {/* Grid of Dynamic Campaigns */}
-      {!loading && filteredCampaigns.length > 0 && (
+      {!initialLoading && filteredCampaigns.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCampaigns.map((campaign) => (
             <CampaignCard

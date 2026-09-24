@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fetchLiveChainTip } from '../lib/stacks-utils';
 import { scaffoldConfig } from '../scaffold.config';
 
@@ -12,6 +12,12 @@ export function BlockHeightBadge({ onHeightUpdate }: BlockHeightBadgeProps) {
   const [burnHeight, setBurnHeight] = useState<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Keep a stable ref to prevent parent re-render loops
+  const onHeightUpdateRef = useRef(onHeightUpdate);
+  useEffect(() => {
+    onHeightUpdateRef.current = onHeightUpdate;
+  }, [onHeightUpdate]);
+
   const loadHeight = async (manual: boolean = false) => {
     if (manual) setIsRefreshing(true);
     try {
@@ -19,7 +25,7 @@ export function BlockHeightBadge({ onHeightUpdate }: BlockHeightBadgeProps) {
       if (tip.stacksTip > 0) {
         setTipHeight(tip.stacksTip);
         setBurnHeight(tip.burnBlock);
-        onHeightUpdate?.(tip.stacksTip);
+        onHeightUpdateRef.current?.(tip.stacksTip);
       }
     } finally {
       if (manual) {
@@ -31,7 +37,7 @@ export function BlockHeightBadge({ onHeightUpdate }: BlockHeightBadgeProps) {
   useEffect(() => {
     loadHeight();
     const interval = setInterval(() => {
-      loadHeight();
+      loadHeight(false);
     }, 25000); // 25s polling
 
     return () => clearInterval(interval);
