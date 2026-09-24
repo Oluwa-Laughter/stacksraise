@@ -57,84 +57,22 @@ The active, feature-complete contract (`crowdfund-v2`) is deployed and fully ver
 
 ```mermaid
 flowchart TD
-    subgraph Users ["1. Users & Wallet Signers"]
-        Creator["Project Creator"]
-        Backer["Community Backer"]
-        Wallet["Stacks Multi-Wallet\nXverse / Leather / Stacks Connect v8"]
-        Creator --> Wallet
-        Backer --> Wallet
-    end
-
-    subgraph Frontend ["2. Frontend Web Application (Next.js 15 & Tailwind CSS)"]
-        UI_Landing["Landing Page\nEscrow Explainer & Architecture"]
-        UI_Dashboard["Campaigns Dashboard\nLive Feed, Metrics & Zone Routing"]
-        UI_Modals["Interactive Modals\nRegister Campaign & STX Contribution"]
-        Wallet --> UI_Landing
-        Wallet --> UI_Dashboard
-        UI_Dashboard --> UI_Modals
-    end
-
-    subgraph Server ["3. Server-Side Infrastructure (Next.js Edge Routes)"]
-        Proxy_Info["/api/stacks/info\nNode Info & Tenure Block Height"]
-        Proxy_Balance["/api/stacks/balance\nReal-time STX Wallet Balance"]
-        UI_Dashboard --> Proxy_Info
-        UI_Dashboard --> Proxy_Balance
-    end
-
-    subgraph Consensus ["4. Blockchain Consensus Layer (Stacks L2 & Bitcoin L1)"]
-        Node["Hiro Stacks Testnet RPC Node"]
-        Contract["crowdfund-v2.clar Smart Contract\nAutonomous Escrow Vault & Project Registry"]
-        Bitcoin["Bitcoin Consensus L1\nTenure Block Height & Finality"]
-
-        Proxy_Info -->|Fetch Chain State| Node
-        Proxy_Balance -->|Fetch Balance| Node
-        UI_Modals -->|Broadcast Signed Tx| Node
-        Node -->|Mutate & Read State| Contract
-        Contract -->|Enforce Block Deadlines| Bitcoin
-    end
-
-    classDef orange fill:#FFF7ED,stroke:#FF5500,stroke-width:2px,color:#0F172A;
-    classDef blue fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#0F172A;
-    classDef gray fill:#F8FAFC,stroke:#64748B,stroke-width:2px,color:#0F172A;
-    classDef dark fill:#0F172A,stroke:#334155,stroke-width:2px,color:#FFFFFF;
-
-    class Creator,Backer,Wallet orange;
-    class UI_Landing,UI_Dashboard,UI_Modals blue;
-    class Proxy_Info,Proxy_Balance gray;
-    class Node,Contract,Bitcoin dark;
-```
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                   Backer / Creator Wallet                   │
-│               (Xverse / Leather / Asigna)                   │
-└──────────────┬──────────────────────────────┬───────────────┘
-               │ Connect & Sign               │ Read State
-               ▼                              ▼
-┌──────────────────────────────┐    ┌─────────────────────────┐
-│     Next.js 15 Frontend      │    │  Next.js Server Proxies │
-│  - Landing Page & Escrow UI  │    │  - /api/stacks/info     │
-│  - Dashboard & Zone Filters  ├────►  - /api/stacks/balance  │
-│  - Creation & Funding Modals │    └────────────┬────────────┘
-└──────────────┬───────────────┘                 │
-               │ Broadcast Signed Tx             │ Read Tip / Balances
-               ▼                                 ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 Hiro Stacks Testnet Node                    │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Execute Clarity Logic
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│           crowdfund-v2.clar Smart Contract                  │
-│  - 100% Non-Custodial Escrow Vault                          │
-│  - On-Chain Project Name & Mission Registry                 │
-│  - Automated Guaranteed Refunds if Target Missed            │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Enforce Block-Height Deadlines
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│               Bitcoin Consensus Layer (L1)                  │
-└─────────────────────────────────────────────────────────────┘
+    A([User: Backer or Creator]) -->|Connects Wallet| B[Stacks Multi-Wallet\nXverse / Leather / Stacks Connect v8]
+    B -->|Signs & Authenticates| C[Next.js 15 Frontend Application\nLanding Page & Campaigns Dashboard]
+    
+    C -->|1. Register Project| D[Create Campaign Modal\nOn-Chain Title + Description + Goal]
+    C -->|2. Back Campaign| E[Fund Campaign Modal\nSTX Contribution + Smart Escrow]
+    C -->|3. Settle Milestone| F[Campaign Card Actions\nCreator Payout or 100% Backer Refund]
+    
+    D -->|Broadcast Signed Tx| G[Hiro Stacks Testnet RPC Node]
+    E -->|Broadcast Signed Tx| G
+    F -->|Broadcast Signed Tx| G
+    
+    C -.->|Server-side Node Proxies| H[Next.js Edge API Routes\n/api/stacks/info & /api/stacks/balance]
+    H -.->|Poll Live Block Height & Balances| G
+    
+    G -->|Execute Contract Mutations & Reads| I[(crowdfund-v2.clar\nClarity Smart Contract Escrow)]
+    I -->|Enforce Tenure Block Deadlines| J[(Bitcoin Consensus Layer 1\nProof of Transfer & Block Height Anchoring)]
 ```
 
 ### Architecture Highlights:
