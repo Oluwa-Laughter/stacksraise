@@ -274,38 +274,19 @@ Route (app)
 
 ## 💬 Feedback — Scaffold Stacks Experience
 
-Building **StacksRaise** with [Scaffold Stacks](https://scaffoldstacks.mintlify.app/) for the Test-Flight Bounty was an exceptionally productive and empowering developer experience. Below is our honest, detailed feedback covering the wins, developer velocity advantages, and constructive suggestions for future versions of the toolkit:
+Building **StacksRaise** during this test-flight was one of the smoothest onboarding experiences I've had in the Stacks ecosystem, but it also taught me a few real-world lessons about shipping full-stack Clarity apps. Here’s an honest take from my experience:
 
-### 🌟 What Worked Incredibly Well:
+### ❤️ What I Loved
+- **`stacksdapp generate` is pure magic:** If you’ve ever written raw Stacks.js boilerplate with manual CV tuple conversions and buffer serialization, you know how tedious it can be. Running one command and getting typed React hooks ready to drop into components felt like modern web2 development, but on Bitcoin.
+- **Clarinet simnet made testing stress-free:** Being able to test contract math, escrow states, and block boundary conditions locally with Vitest before deploying saved so much time and prevented costly deployment mistakes.
+- **Seamless Wallet Integration:** Getting Xverse and Leather to connect cleanly without dealing with legacy compatibility quirks made getting to a working, interactive prototype fast.
 
-1. **Instant Project Scaffolding & Simnet Harness:**
-   - Setting up a full-stack Clarity 2.5 dApp was straightforward. The unified directory structure separating smart contracts and frontend while sharing configurations saved significant initial setup time.
-   - Clarinet's in-memory simnet integration allowed us to write unit tests in Vitest (`contracts/tests/crowdfund.test.ts`) and verify math invariants, error codes, and block boundary conditions in milliseconds before deploying to testnet.
+### 🧗 Where I Hit Friction (And Ideas for the Team)
+- **The Testnet Gas Bottleneck:** Waiting on web faucets or running low on STX while deploying and testing multiple contract iterations was the biggest speed bump. Having a quick CLI faucet helper (e.g. `stacksdapp faucet`) right in the terminal would be a huge quality-of-life upgrade for builders.
+- **Browser Privacy Shields vs Public RPCs:** When testing the live UI on browsers like Brave, direct client-side requests to `api.testnet.hiro.so` occasionally got blocked by ad/privacy shields. I solved this by setting up simple server-side proxy routes in Next.js (`/api/stacks/*`), and having that included or documented in the starter template would save future builders a lot of debugging time.
+- **Handling On-Chain Feed Data:** Because Clarity data maps can't be enumerated directly on-chain, rendering a live feed of campaigns requires tracking a counter and batching reads. A quick recipe or helper hook in the Scaffold Stacks docs showing recommended patterns for reading map lists would be super helpful for builders creating marketplaces, DAOs, or crowdfunding projects.
 
-2. **Auto-Generated Type-Safe Hooks (`stacksdapp generate`):**
-   - The TypeScript code generator is the single biggest developer velocity boost in the ecosystem.
-   - Mapping Clarity contract functions directly to typed React hooks (`useCrowdfundV2CreateCampaign`, `useCrowdfundV2FundCampaign`, `useCrowdfundV2GetCampaign`) eliminated hundreds of lines of fragile manual tuple serialization, buffer encoding, and CV (Clarity Value) boilerplate.
-
-3. **Multi-Wallet Compatibility via `@stacks/connect` v8:**
-   - Out-of-the-box integration with Leather and Xverse worked reliably across modern Stacks standards.
-   - Session restoration and reactive account changes integrated cleanly with our Jotai state atoms, making wallet connection management hassle-free.
-
----
-
-### 💡 Constructive Suggestions & Opportunities for Improvement:
-
-1. **Built-in Testnet Faucet CLI Command:**
-   - **Context:** During rapid iteration cycles, testnet deployer addresses and contributor test accounts frequently hit gas constraints.
-   - **Suggestion:** Adding a command like `stacksdapp faucet [address]` or a built-in proxy in the CLI to request testnet STX directly would save developers from constantly switching between web faucets and the terminal.
-
-2. **First-Class Edge / SSR Node Proxies for Browser Resilience:**
-   - **Context:** Modern privacy-focused browsers (Brave Shields, Firefox Enhanced Tracking, uBlock Origin) often flag or block direct client-side fetch requests to public RPC nodes like `https://api.testnet.hiro.so`.
-   - **Our Solution:** We built Next.js server-side Edge API proxy routes (`/api/stacks/info` and `/api/stacks/balance`) to fetch live chain tips and account balances server-to-server.
-   - **Suggestion:** Providing pre-configured server-side API proxy route templates out-of-the-box in the Scaffold Stacks frontend scaffold would ensure every developer's dApp works flawlessly across all user browser environments without manual proxy troubleshooting.
-
-3. **Clarity Map Iteration / Feed Helper Patterns:**
-   - **Context:** Clarity data maps are non-enumerable on-chain by design. Generating frontend feeds requires tracking an on-chain counter (`campaign-count`) and batching reads.
-   - **Suggestion:** Adding recommended patterns or helper hooks in Scaffold Stacks documentation for batched map reads (e.g., `useBatchReadMap`) would help teams building feed-driven dApps (marketplaces, DAOs, crowdfunding) avoid common N+1 query pitfalls.
+Overall, Scaffold Stacks dramatically lowers the barrier to building on Bitcoin with Stacks. Huge props to the team for putting this together! 🚀
 
 ---
 
