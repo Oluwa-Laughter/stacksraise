@@ -100,16 +100,28 @@ export function CreateCampaignModal({
         Cl.uint(microStx),
         Cl.uint(durationBlocks),
       ]);
+      // Trigger feed refresh in background while showing animated loading screen
       onSuccess?.();
     } catch (err: any) {
       console.error('Failed to create campaign:', err);
-      setErrorMsg(err?.message || 'Transaction failed or rejected by wallet.');
+      const rawMsg = err?.message || '';
+      if (rawMsg.includes('Failed to fetch')) {
+        setErrorMsg('Network notice: Unable to contact Stacks node. If you use Brave or adblockers, please disable shields, or check your wallet connection.');
+      } else {
+        setErrorMsg(rawMsg || 'Transaction canceled or rejected by wallet.');
+      }
     }
   };
 
   const handleClose = () => {
     if (!isProcessing) {
       setErrorMsg(null);
+      if (txid) {
+        setTitleInput('');
+        setDescriptionInput('');
+        setTargetStxInput('50');
+        setDurationBlocksInput('144');
+      }
       onClose();
     }
   };
@@ -161,200 +173,261 @@ export function CreateCampaignModal({
               </button>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              {/* Project Title / Name */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                    Project Title / Name
-                  </label>
-                  <span className="text-[11px] font-mono text-slate-400">
-                    {titleInput.length}/64
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  maxLength={64}
-                  required
-                  value={titleInput}
-                  onChange={(e) => setTitleInput(e.target.value)}
-                  placeholder="e.g. Bitcoin L2 Arcade Studio"
-                  disabled={isProcessing}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors disabled:opacity-60"
-                />
-              </div>
-
-              {/* Project Description */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                    Project Mission & Description
-                  </label>
-                  <span className="text-[11px] font-mono text-slate-400">
-                    {descriptionInput.length}/256
-                  </span>
-                </div>
-                <textarea
-                  rows={3}
-                  maxLength={256}
-                  required
-                  value={descriptionInput}
-                  onChange={(e) => setDescriptionInput(e.target.value)}
-                  placeholder="Explain why you are raising funds and what milestones will be delivered..."
-                  disabled={isProcessing}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors resize-none disabled:opacity-60"
-                />
-              </div>
-
-              {/* Target Input */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Funding Target (STX)
-                </label>
-                <div className="relative rounded-lg shadow-sm">
-                  <input
-                    type="number"
-                    step="any"
-                    min="0.000001"
-                    required
-                    value={targetStxInput}
-                    onChange={(e) => setTargetStxInput(e.target.value)}
-                    placeholder="e.g. 50"
-                    disabled={isProcessing}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors pr-16 disabled:opacity-60"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-xs font-mono font-bold text-[#FF5500]">
-                    STX
+            {/* Body: Dedicated Post-Signing Loading View vs Creation Form */}
+            {txid ? (
+              <div className="py-6 flex flex-col items-center text-center space-y-5">
+                {txStatus === 'success' ? (
+                  <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-300 flex items-center justify-center text-emerald-600 animate-bounce">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
-                </div>
-                <p className="text-[11px] text-slate-400 font-mono mt-1">
-                  On-chain conversion:{' '}
-                  {targetStxInput ? `${stxToMicroStx(targetStxInput).toLocaleString()} micro-STX` : '0 uSTX'}
-                </p>
-              </div>
-
-              {/* Duration in Blocks */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Campaign Duration (Blocks)
-                </label>
-                <div className="relative rounded-lg shadow-sm">
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={durationBlocksInput}
-                    onChange={(e) => setDurationBlocksInput(e.target.value)}
-                    placeholder="e.g. 144"
-                    disabled={isProcessing}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors pr-20 disabled:opacity-60"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-xs font-mono text-slate-500">
-                    blocks
-                  </div>
-                </div>
-
-                {/* Helper hint */}
-                <div className="mt-1.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-500">Estimated Duration:</span>
-                  <span className="font-semibold text-slate-800">
-                    {blocksToTimeEstimate(durationBlocks)}
-                  </span>
-                </div>
-                {estimatedEndBlock > 0 && (
-                  <p className="text-[11px] text-slate-400 font-mono mt-1">
-                    Current block #{currentBlock.toLocaleString()} → Target end block #{estimatedEndBlock.toLocaleString()}
-                  </p>
-                )}
-              </div>
-
-              {/* Error Alert */}
-              {errorMsg && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600 font-mono">
-                  {errorMsg}
-                </div>
-              )}
-
-              {/* Tx Status feedback */}
-              {txid && (
-                <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg text-xs font-mono space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-[#FF5500]">Transaction Status:</span>
-                    <span className={`capitalize px-2 py-0.5 rounded text-xs font-bold border ${
-                      txStatus === 'success'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                        : 'bg-white text-slate-700 border-orange-200'
-                    }`}>
-                      {txStatus ?? 'pending'}
+                ) : (
+                  <div className="relative">
+                    <div className="w-16 h-16 rounded-full bg-orange-50 border-2 border-orange-200 flex items-center justify-center text-[#FF5500]">
+                      <svg className="w-8 h-8 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    </div>
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF5500] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-[#FF5500]"></span>
                     </span>
                   </div>
-                  <a
-                    href={getExplorerTxUrl(txid, scaffoldConfig.network)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#FF5500] hover:underline block truncate font-medium"
-                  >
-                    View on Hiro Explorer: {formatAddress(txid, 10, 8)} ↗
-                  </a>
-                  {txStatus === 'pending' && (
-                    <p className="text-slate-500 text-[11px] flex items-center gap-1.5 pt-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500] animate-ping" />
-                      Waiting for block confirmation on Stacks testnet...
-                    </p>
-                  )}
-                  {txStatusError && (
-                    <p className="text-red-500 mt-1">{txStatusError}</p>
-                  )}
-                </div>
-              )}
+                )}
 
-              {/* Submit CTA */}
-              <div className="pt-2 flex items-center gap-3">
+                <div>
+                  <h3 className="text-base font-bold text-[#0F172A] font-instrument">
+                    {txStatus === 'success'
+                      ? 'Campaign Confirmed On-Chain!'
+                      : 'Broadcasting to Stacks Testnet...'}
+                  </h3>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 leading-relaxed">
+                    {txStatus === 'success'
+                      ? 'Your project is now published on Bitcoin block consensus and open for community contributions.'
+                      : 'Your transaction has been signed and broadcast. Stacks miners are indexing your project on-chain. Please wait while the dashboard syncs.'}
+                  </p>
+                </div>
+
+                {/* Animated progress bar */}
+                {txStatus !== 'success' && (
+                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div className="bg-[#FF5500] h-2 rounded-full animate-pulse w-full"></div>
+                  </div>
+                )}
+
+                {/* Transaction Details Box */}
+                <div className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5 text-xs font-mono text-left">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Project:</span>
+                    <span className="font-bold text-[#0F172A] truncate max-w-[200px]">{titleInput}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Target Goal:</span>
+                    <span className="font-bold text-[#FF5500]">{targetStxInput} STX</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">On-Chain Status:</span>
+                    <span className={`px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider ${
+                      txStatus === 'success'
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-orange-100 text-[#FF5500] flex items-center gap-1.5'
+                    }`}>
+                      {txStatus !== 'success' && <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500] animate-ping" />}
+                      {txStatus ?? 'indexing on-chain'}
+                    </span>
+                  </div>
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+                    <span className="text-slate-500">Tx Hash:</span>
+                    <a
+                      href={getExplorerTxUrl(txid, scaffoldConfig.network)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#FF5500] hover:underline flex items-center gap-1 font-bold"
+                    >
+                      <span>{formatAddress(txid, 8, 6)}</span>
+                      <span className="text-xs">↗</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Action CTA */}
                 <button
                   type="button"
-                  onClick={handleClose}
-                  disabled={isProcessing}
-                  className="w-1/3 py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold tracking-wide transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  onClick={() => {
+                    onSuccess?.();
+                    handleClose();
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-98 flex items-center justify-center gap-2"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isProcessing || !address}
-                  className="w-2/3 py-2.5 px-4 rounded-lg bg-[#FF5500] hover:bg-[#E04B00] text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                      Waiting for Wallet Signature...
-                    </span>
-                  ) : txStatus === 'pending' ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                      Confirming on Stacks...
-                    </span>
-                  ) : txStatus === 'success' ? (
-                    <span className="flex items-center gap-1.5">
-                      <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      Published On-Chain!
-                    </span>
-                  ) : !address ? (
-                    'Connect Wallet First'
-                  ) : (
-                    'Publish Campaign On-Chain'
-                  )}
+                  <span>{txStatus === 'success' ? 'Explore in Dashboard' : 'View Feed (Syncing in Background)'}</span>
+                  <span>→</span>
                 </button>
               </div>
-            </form>
+            ) : (
+              /* Form */
+              <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+                {/* Project Title / Name */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      Project Title / Name
+                    </label>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {titleInput.length}/64
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    maxLength={64}
+                    required
+                    value={titleInput}
+                    onChange={(e) => setTitleInput(e.target.value)}
+                    placeholder="e.g. Bitcoin L2 Arcade Studio"
+                    disabled={isProcessing}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors disabled:opacity-60"
+                  />
+                </div>
+
+                {/* Project Mission & Description */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      Project Mission & Description
+                    </label>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {descriptionInput.length}/256
+                    </span>
+                  </div>
+                  <textarea
+                    rows={3}
+                    maxLength={256}
+                    required
+                    value={descriptionInput}
+                    onChange={(e) => setDescriptionInput(e.target.value)}
+                    placeholder="Explain why you are raising funds and what milestones will be delivered..."
+                    disabled={isProcessing}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors resize-none disabled:opacity-60"
+                  />
+                </div>
+
+                {/* Target Input */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Funding Target (STX)
+                  </label>
+                  <div className="relative rounded-lg shadow-sm">
+                    <input
+                      type="number"
+                      step="any"
+                      min="0.000001"
+                      required
+                      value={targetStxInput}
+                      onChange={(e) => setTargetStxInput(e.target.value)}
+                      placeholder="e.g. 50"
+                      disabled={isProcessing}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors pr-16 disabled:opacity-60"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-xs font-mono font-bold text-[#FF5500]">
+                      STX
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-mono mt-1">
+                    On-chain conversion:{' '}
+                    {targetStxInput ? `${stxToMicroStx(targetStxInput).toLocaleString()} micro-STX` : '0 uSTX'}
+                  </p>
+                </div>
+
+                {/* Duration in Blocks */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Campaign Duration (Blocks)
+                  </label>
+                  <div className="relative rounded-lg shadow-sm">
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={durationBlocksInput}
+                      onChange={(e) => setDurationBlocksInput(e.target.value)}
+                      placeholder="e.g. 144"
+                      disabled={isProcessing}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#FF5500]/20 focus:border-[#FF5500] transition-colors pr-20 disabled:opacity-60"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-xs font-mono text-slate-500">
+                      blocks
+                    </div>
+                  </div>
+
+                  {/* Helper hint */}
+                  <div className="mt-1.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-xs font-mono">
+                    <span className="text-slate-500">Estimated Duration:</span>
+                    <span className="font-semibold text-slate-800">
+                      {blocksToTimeEstimate(durationBlocks)}
+                    </span>
+                  </div>
+                  {estimatedEndBlock > 0 && (
+                    <p className="text-[11px] text-slate-400 font-mono mt-1">
+                      Current block #{currentBlock.toLocaleString()} → Target end block #{estimatedEndBlock.toLocaleString()}
+                    </p>
+                  )}
+                </div>
+
+                {/* Error Alert */}
+                {errorMsg && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600 font-mono">
+                    {errorMsg}
+                  </div>
+                )}
+
+                {/* Submit CTA */}
+                <div className="pt-2 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    disabled={isProcessing}
+                    className="w-1/3 py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold tracking-wide transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isProcessing || !address}
+                    className="w-2/3 py-2.5 px-4 rounded-lg bg-[#FF5500] hover:bg-[#E04B00] text-white text-xs font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        Waiting for Wallet Signature...
+                      </span>
+                    ) : txStatus === 'pending' ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        Confirming on Stacks...
+                      </span>
+                    ) : txStatus === 'success' ? (
+                      <span className="flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        Published On-Chain!
+                      </span>
+                    ) : !address ? (
+                      'Connect Wallet First'
+                    ) : (
+                      'Publish Campaign On-Chain'
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
           </motion.div>
         </div>
       )}

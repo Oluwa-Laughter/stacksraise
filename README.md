@@ -121,6 +121,7 @@ stacks-raise/
 │   │   ├── app/
 │   │   │   ├── api/stacks/
 │   │   │   │   ├── balance/route.ts      # Server-side proxy for user STX balance
+│   │   │   │   ├── campaigns/route.ts    # Server-side proxy for live campaigns feed
 │   │   │   │   └── info/route.ts         # Server-side proxy for live chain tip
 │   │   │   ├── dashboard/page.tsx        # dApp Crowdfunding Dashboard with Zone Routing
 │   │   │   ├── globals.css               # Sharp borders, custom scrollbar stability
@@ -258,7 +259,7 @@ All tests passed.
 ✓ Compiled successfully in 5.4s
 ✓ Linting and checking validity of types
 ✓ Collecting page data
-✓ Generating static pages (7/7)
+✓ Generating static pages (8/8)
 ✓ Collecting build traces
 ✓ Finalizing page optimization
 
@@ -266,6 +267,7 @@ Route (app)
 ┌ ○ /                                    (Landing Page)
 ├ ○ /_not-found                          (Not Found)
 ├ ƒ /api/stacks/balance                  (STX Balance Proxy)
+├ ○ /api/stacks/campaigns                (Live Campaigns Feed Proxy)
 ├ ○ /api/stacks/info                     (Chain Tip Proxy)
 └ ○ /dashboard                           (Crowdfunding Dashboard)
 ```

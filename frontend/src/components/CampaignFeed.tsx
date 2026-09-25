@@ -21,6 +21,7 @@ interface CampaignFeedProps {
   onCampaignsLoaded?: (campaigns: CampaignData[]) => void;
   activeZone?: FilterTab;
   onZoneChange?: (zone: FilterTab) => void;
+  refreshTrigger?: number;
 }
 
 export function CampaignFeed({
@@ -30,6 +31,7 @@ export function CampaignFeed({
   onCampaignsLoaded,
   activeZone,
   onZoneChange,
+  refreshTrigger,
 }: CampaignFeedProps) {
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -62,7 +64,27 @@ export function CampaignFeed({
       setErrorMsg(null);
 
       try {
-        // 1. Fetch total count from on-chain getter
+        // 1. Try server-side internal proxy first (adblocker-safe and single round-trip)
+        try {
+          const res = await fetch('/api/stacks/campaigns', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.campaigns && Array.isArray(data.campaigns)) {
+              const parsed: CampaignData[] = data.campaigns.map((c: any) => ({
+                ...c,
+                targetStx: BigInt(c.targetStx),
+                raisedStx: BigInt(c.raisedStx),
+              }));
+              setCampaigns(parsed);
+              onCampaignsLoadedRef.current?.(parsed);
+              return;
+            }
+          }
+        } catch (proxyErr) {
+          console.warn('API proxy fallback to direct node RPC:', proxyErr);
+        }
+
+        // 2. Direct client-side contract reads fallback
         const countRes = await fetchCount([]);
         const totalCountBig = extractClarityUint(countRes);
         const totalCount = totalCountBig !== null ? Number(totalCountBig) : 0;
@@ -120,6 +142,13 @@ export function CampaignFeed({
 
     return () => clearInterval(interval);
   }, [loadAllCampaigns]);
+
+  // Refresh feed whenever modal reports an on-chain mutation
+  useEffect(() => {
+    if (refreshTrigger !== undefined && refreshTrigger > 0) {
+      loadAllCampaigns(true);
+    }
+  }, [refreshTrigger, loadAllCampaigns]);
 
   // Filter campaigns according to active tab
   const filteredCampaigns = campaigns.filter((c) => {

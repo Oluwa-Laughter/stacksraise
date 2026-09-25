@@ -6,7 +6,7 @@ import { createNetwork, type StacksNetwork, type StacksNetworkName } from '@stac
 type ScaffoldNetwork = 'devnet' | 'testnet' | 'mainnet';
 
 function resolveNetwork(value: string | undefined): ScaffoldNetwork {
-  const network = value ?? 'devnet';
+  const network = value ?? 'testnet';
   if (network === 'devnet' || network === 'testnet' || network === 'mainnet') {
     return network;
   }

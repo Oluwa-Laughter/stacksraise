@@ -36,6 +36,9 @@ function DashboardContent() {
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedFundCampaign, setSelectedFundCampaign] = useState<CampaignData | null>(null);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
+
+  const triggerRefresh = () => setRefreshKey((k) => k + 1);
 
   const handleZoneSelect = (filter: FilterTab) => {
     const slug = filterMapToZone[filter];
@@ -162,6 +165,7 @@ function DashboardContent() {
             onCampaignsLoaded={(loaded) => setCampaigns(loaded)}
             activeZone={currentFilter}
             onZoneChange={(newZone) => handleZoneSelect(newZone)}
+            refreshTrigger={refreshKey}
           />
         </div>
       </main>
@@ -172,7 +176,7 @@ function DashboardContent() {
         onClose={() => setIsCreateOpen(false)}
         currentBlock={currentBlock}
         onSuccess={() => {
-          setIsCreateOpen(false);
+          triggerRefresh();
         }}
       />
 
@@ -181,7 +185,7 @@ function DashboardContent() {
         isOpen={Boolean(selectedFundCampaign)}
         onClose={() => setSelectedFundCampaign(null)}
         onSuccess={() => {
-          setSelectedFundCampaign(null);
+          triggerRefresh();
         }}
       />
     </div>
