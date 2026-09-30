@@ -271,3 +271,26 @@ export async function fetchAddressStxBalance(
     return 0n;
   }
 }
+
+/** Compares two arrays of CampaignData to avoid unnecessary re-renders */
+export function areCampaignsEqual(a: CampaignData[], b: CampaignData[]): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    const c1 = a[i];
+    const c2 = b[i];
+    if (
+      c1.id !== c2.id ||
+      c1.creator !== c2.creator ||
+      c1.raisedStx !== c2.raisedStx ||
+      c1.targetStx !== c2.targetStx ||
+      c1.endBlock !== c2.endBlock ||
+      c1.claimed !== c2.claimed ||
+      c1.title !== c2.title
+    ) {
+      return false;
+    }
+  }
+  return true;
+}

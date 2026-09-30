@@ -18,6 +18,8 @@ export function BlockHeightBadge({ onHeightUpdate }: BlockHeightBadgeProps) {
     onHeightUpdateRef.current = onHeightUpdate;
   }, [onHeightUpdate]);
 
+  const lastNotifiedHeightRef = useRef<number | null>(null);
+
   const loadHeight = async (manual: boolean = false) => {
     if (manual) setIsRefreshing(true);
     try {
@@ -26,7 +28,10 @@ export function BlockHeightBadge({ onHeightUpdate }: BlockHeightBadgeProps) {
       if (effectiveBlock > 0) {
         setTipHeight(effectiveBlock);
         setBurnHeight(tip.burnBlock);
-        onHeightUpdateRef.current?.(effectiveBlock);
+        if (lastNotifiedHeightRef.current !== effectiveBlock) {
+          lastNotifiedHeightRef.current = effectiveBlock;
+          onHeightUpdateRef.current?.(effectiveBlock);
+        }
       }
     } finally {
       if (manual) {

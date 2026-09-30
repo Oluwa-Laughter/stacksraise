@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, Suspense } from 'react';
+import React, { useState, useMemo, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '../../components/Header';
@@ -7,7 +7,28 @@ import { StatsBanner } from '../../components/StatsBanner';
 import { CampaignFeed, type FilterTab } from '../../components/CampaignFeed';
 import { CreateCampaignModal } from '../../components/CreateCampaignModal';
 import { FundCampaignModal } from '../../components/FundCampaignModal';
-import { type CampaignData, getCampaignStatus } from '../../lib/stacks-utils';
+import { type CampaignData, getCampaignStatus, areCampaignsEqual } from '../../lib/stacks-utils';
+
+const ZONE_MAP_TO_FILTER: Record<string, FilterTab> = {
+  all: 'ALL',
+  active: 'ACTIVE',
+  funded: 'TARGET_REACHED',
+  ended: 'EXPIRED',
+};
+
+const FILTER_MAP_TO_ZONE: Record<FilterTab, string> = {
+  ALL: 'all',
+  ACTIVE: 'active',
+  TARGET_REACHED: 'funded',
+  EXPIRED: 'ended',
+};
+
+const ZONE_LABELS: Record<FilterTab, string> = {
+  ALL: 'All Campaigns',
+  ACTIVE: 'Active',
+  TARGET_REACHED: 'Target Reached',
+  EXPIRED: 'Ended / Missed',
+};
 
 function DashboardContent() {
   const router = useRouter();
@@ -15,22 +36,7 @@ function DashboardContent() {
 
   // Route zone mapping: all | active | funded | ended
   const zoneParam = searchParams.get('zone') || 'all';
-
-  const zoneMapToFilter: Record<string, FilterTab> = {
-    all: 'ALL',
-    active: 'ACTIVE',
-    funded: 'TARGET_REACHED',
-    ended: 'EXPIRED',
-  };
-
-  const filterMapToZone: Record<FilterTab, string> = {
-    ALL: 'all',
-    ACTIVE: 'active',
-    TARGET_REACHED: 'funded',
-    EXPIRED: 'ended',
-  };
-
-  const currentFilter: FilterTab = zoneMapToFilter[zoneParam] ?? 'ALL';
+  const currentFilter: FilterTab = ZONE_MAP_TO_FILTER[zoneParam] ?? 'ALL';
 
   const [currentBlock, setCurrentBlock] = useState<number>(0);
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
@@ -38,46 +44,58 @@ function DashboardContent() {
   const [selectedFundCampaign, setSelectedFundCampaign] = useState<CampaignData | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0);
 
-  const triggerRefresh = () => setRefreshKey((k) => k + 1);
+  const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
-  const handleZoneSelect = (filter: FilterTab) => {
-    const slug = filterMapToZone[filter];
+  const handleZoneSelect = useCallback((filter: FilterTab) => {
+    const slug = FILTER_MAP_TO_ZONE[filter];
     router.replace(`/dashboard?zone=${slug}`, { scroll: false });
-  };
+  }, [router]);
 
-  // Calculate live counts for each zone
-  const allCount = campaigns.length;
-  const activeCount = campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'ACTIVE').length;
-  const fundedCount = campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'TARGET_REACHED').length;
-  const endedCount = campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'EXPIRED').length;
+  const handleBlockUpdate = useCallback((height: number) => {
+    setCurrentBlock((prev) => (prev !== height ? height : prev));
+  }, []);
 
-  const zoneLabels: Record<FilterTab, string> = {
-    ALL: 'All Campaigns',
-    ACTIVE: 'Active',
-    TARGET_REACHED: 'Target Reached',
-    EXPIRED: 'Ended / Missed',
-  };
+  const handleCampaignsLoaded = useCallback((loaded: CampaignData[]) => {
+    setCampaigns((prev) => (areCampaignsEqual(prev, loaded) ? prev : loaded));
+  }, []);
 
-  const zoneCounts: Record<FilterTab, number> = {
-    ALL: allCount,
-    ACTIVE: activeCount,
-    TARGET_REACHED: fundedCount,
-    EXPIRED: endedCount,
-  };
+  // Calculate live counts for each zone with memoization
+  const { allCount, activeCount, fundedCount, endedCount, zoneCounts, zoneOptions } = useMemo(() => {
+    const all = campaigns.length;
+    const active = campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'ACTIVE').length;
+    const funded = campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'TARGET_REACHED').length;
+    const ended = campaigns.filter((c) => getCampaignStatus(c, currentBlock) === 'EXPIRED').length;
 
-  const zoneOptions: Array<{ key: FilterTab; label: string; count: number }> = [
-    { key: 'ALL', label: 'All Campaigns', count: allCount },
-    { key: 'ACTIVE', label: 'Active', count: activeCount },
-    { key: 'TARGET_REACHED', label: 'Target Reached', count: fundedCount },
-    { key: 'EXPIRED', label: 'Ended / Missed', count: endedCount },
-  ];
+    const counts: Record<FilterTab, number> = {
+      ALL: all,
+      ACTIVE: active,
+      TARGET_REACHED: funded,
+      EXPIRED: ended,
+    };
+
+    const options: Array<{ key: FilterTab; label: string; count: number }> = [
+      { key: 'ALL', label: 'All Campaigns', count: all },
+      { key: 'ACTIVE', label: 'Active', count: active },
+      { key: 'TARGET_REACHED', label: 'Target Reached', count: funded },
+      { key: 'EXPIRED', label: 'Ended / Missed', count: ended },
+    ];
+
+    return {
+      allCount: all,
+      activeCount: active,
+      fundedCount: funded,
+      endedCount: ended,
+      zoneCounts: counts,
+      zoneOptions: options,
+    };
+  }, [campaigns, currentBlock]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col text-[#0F172A]">
       {/* Top Navbar */}
       <Header
         onOpenCreate={() => setIsCreateOpen(true)}
-        onBlockUpdate={(height) => setCurrentBlock(height)}
+        onBlockUpdate={handleBlockUpdate}
       />
 
       {/* Main Content Area */}
@@ -104,7 +122,7 @@ function DashboardContent() {
               <>
                 <span>/</span>
                 <span className="text-[#FF5500] font-bold bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
-                  {zoneLabels[currentFilter]} ({zoneCounts[currentFilter]})
+                  {ZONE_LABELS[currentFilter]} ({zoneCounts[currentFilter]})
                 </span>
               </>
             )}
@@ -162,9 +180,9 @@ function DashboardContent() {
             currentBlock={currentBlock}
             onOpenCreate={() => setIsCreateOpen(true)}
             onSelectCampaignToFund={(c) => setSelectedFundCampaign(c)}
-            onCampaignsLoaded={(loaded) => setCampaigns(loaded)}
+            onCampaignsLoaded={handleCampaignsLoaded}
             activeZone={currentFilter}
-            onZoneChange={(newZone) => handleZoneSelect(newZone)}
+            onZoneChange={handleZoneSelect}
             refreshTrigger={refreshKey}
           />
         </div>
@@ -175,18 +193,14 @@ function DashboardContent() {
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         currentBlock={currentBlock}
-        onSuccess={() => {
-          triggerRefresh();
-        }}
+        onSuccess={triggerRefresh}
       />
 
       <FundCampaignModal
         campaign={selectedFundCampaign}
         isOpen={Boolean(selectedFundCampaign)}
         onClose={() => setSelectedFundCampaign(null)}
-        onSuccess={() => {
-          triggerRefresh();
-        }}
+        onSuccess={triggerRefresh}
       />
     </div>
   );

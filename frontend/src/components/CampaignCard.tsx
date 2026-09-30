@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Cl } from '@stacks/transactions';
 import { useAtomValue } from 'jotai';
 import { addressAtom } from '../store/wallet';
@@ -14,8 +14,8 @@ import {
   blocksToTimeEstimate,
   extractClarityUint,
 } from '../lib/stacks-utils';
+import { crowdfundV2_getContribution } from '../generated/contracts';
 import {
-  useCrowdfund_GetContribution,
   useCrowdfund_ClaimFunds,
   useCrowdfund_ClaimRefund,
 } from '../generated/hooks';
@@ -28,7 +28,16 @@ interface CampaignCardProps {
   onRefresh?: () => void;
 }
 
-export function CampaignCard({
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 350, damping: 25 },
+  },
+};
+
+function CampaignCardComponent({
   campaign,
   currentBlock,
   onContributeClick,
@@ -37,8 +46,7 @@ export function CampaignCard({
   const connectedAddress = useAtomValue(addressAtom);
   const status = getCampaignStatus(campaign, currentBlock);
 
-  // User contribution lookup
-  const { call: fetchContribution, data: rawContrib } = useCrowdfund_GetContribution();
+  // User contribution lookup — direct contract read (zero intermediate hook re-renders)
   const [userContribution, setUserContribution] = useState<bigint>(0n);
 
   useEffect(() => {
@@ -46,17 +54,23 @@ export function CampaignCard({
       setUserContribution(0n);
       return;
     }
-    void fetchContribution([Cl.uint(campaign.id), Cl.principal(connectedAddress)])
+    let isCurrent = true;
+    crowdfundV2_getContribution([Cl.uint(campaign.id), Cl.principal(connectedAddress)])
       .then((res) => {
+        if (!isCurrent) return;
         const uintVal = extractClarityUint(res);
         if (uintVal !== null) {
-          setUserContribution(uintVal);
+          setUserContribution((prev) => (prev !== uintVal ? uintVal : prev));
         }
       })
       .catch((err) => {
         console.warn('Error fetching contribution:', err);
       });
-  }, [connectedAddress, campaign.id, fetchContribution]);
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [connectedAddress, campaign.id]);
 
   // Claim actions
   const {
@@ -94,13 +108,12 @@ export function CampaignCard({
     }
   };
 
-  // Remaining blocks calculation
-  const remainingBlocks = Math.max(0, campaign.endBlock - currentBlock);
+  // Remaining blocks calculation (guarded against currentBlock = 0)
+  const remainingBlocks = currentBlock > 0 ? Math.max(0, campaign.endBlock - currentBlock) : 0;
   const isExpired = currentBlock > 0 && currentBlock >= campaign.endBlock;
   const isGoalMet = campaign.raisedStx >= campaign.targetStx;
   const isCreator =
-    connectedAddress &&
-    connectedAddress.toLowerCase() === campaign.creator.toLowerCase();
+    connectedAddress ? connectedAddress.toLowerCase() === campaign.creator.toLowerCase() : false;
 
   // Progress percentage calculation
   const percentNumber =
@@ -110,10 +123,11 @@ export function CampaignCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
+      layout="position"
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover={{ y: -3, transition: { duration: 0.2, ease: 'easeOut' } }}
       className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
     >
       <div>
@@ -187,12 +201,12 @@ export function CampaignCard({
             </span>
           </div>
 
-          {/* Framer Motion Animated Progress Bar */}
+          {/* Framer Motion Animated Progress Bar (GPU accelerated, non-collapsing) */}
           <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/80">
             <motion.div
-              initial={{ width: 0 }}
+              initial={false}
               animate={{ width: `${percentNumber}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
+              transition={{ type: 'spring', stiffness: 120, damping: 20 }}
               className={`h-full rounded-full transition-colors ${
                 isGoalMet ? 'bg-emerald-500' : 'bg-[#FF5500]'
               }`}
@@ -216,8 +230,10 @@ export function CampaignCard({
             <span className="block text-[10px] uppercase tracking-wider text-slate-400 truncate">
               Remaining
             </span>
-            <span className={`font-semibold truncate block ${remainingBlocks === 0 ? 'text-slate-500' : 'text-[#FF5500]'}`}>
-              {remainingBlocks > 0
+            <span className={`font-semibold truncate block ${currentBlock === 0 ? 'text-slate-400' : remainingBlocks === 0 ? 'text-slate-500' : 'text-[#FF5500]'}`}>
+              {currentBlock === 0
+                ? 'Syncing block...'
+                : remainingBlocks > 0
                 ? `${remainingBlocks.toLocaleString()} blks (${blocksToTimeEstimate(remainingBlocks)})`
                 : 'Deadline reached'}
             </span>
@@ -334,3 +350,5 @@ export function CampaignCard({
     </motion.div>
   );
 }
+
+export const CampaignCard = React.memo(CampaignCardComponent);

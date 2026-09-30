@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cl } from '@stacks/transactions';
 import { useAtomValue } from 'jotai';
@@ -41,11 +41,15 @@ export function FundCampaignModal({
   } = useCrowdfund_FundCampaign();
 
   const isProcessing = loading || txStatus === 'pending';
+  const hasTriggeredSuccess = useRef(false);
 
-  // Automatically refresh feed when contribution confirms
+  // Automatically refresh feed ONCE when contribution confirms
   useEffect(() => {
-    if (txStatus === 'success') {
+    if (txStatus === 'success' && !hasTriggeredSuccess.current) {
+      hasTriggeredSuccess.current = true;
       onSuccess?.();
+    } else if (txStatus !== 'success') {
+      hasTriggeredSuccess.current = false;
     }
   }, [txStatus, onSuccess]);
 
